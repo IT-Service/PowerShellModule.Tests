@@ -353,7 +353,7 @@ InModuleScope $script:ModuleName {
         }
     }
 
-    Describe 'TestHelper\Get-ResourceModulesInConfiguration' {
+    Describe 'TestHelper\Get-ModulesInScript' {
         BeforeAll {
             $moduleName1 = 'ModuleWithoutVersion'
             $moduleName2 = 'ModuleWithSpecificVersion'
@@ -362,19 +362,16 @@ InModuleScope $script:ModuleName {
             $arrayModuleName1 = 'ModuleNameArray1'
             $arrayModuleName2 = 'ModuleNameArray2'
 
-            $scriptPath = Join-Path -Path $TestDrive -ChildPath 'TestConfiguration.ps1'
+            $scriptPath = Join-Path -Path $TestDrive -ChildPath 'TestScript.ps1'
         }
 
         Context 'When a script file requires a module' {
             It 'Should return the correct module name' {
                 "
-                    Configuration Test
-                    {
-                        Import-PowerShellModule -ModuleName $moduleName1
-                    }
+                    Import-Module -Name $moduleName1
                 " | Out-File -FilePath $scriptPath -Encoding ascii -Force
 
-                $result = Get-ResourceModulesInConfiguration -ConfigurationPath $scriptPath
+                $result = Get-ModulesInScript -Path $scriptPath
                 $result.Name | Should -Be $moduleName1
                 $result.Version | Should -BeNullOrEmpty
             }
@@ -383,13 +380,10 @@ InModuleScope $script:ModuleName {
         Context 'When a script file requires a module with specific version' {
             It 'Should return the correct module name and version' {
                 "
-                    Configuration Test
-                    {
-                        Import-PowerShellModule -ModuleName $moduleName2 -ModuleVersion $moduleVersion
-                    }
+                    Import-Module -Name $moduleName2 -MinimumVersion $moduleVersion
                 " | Out-File -FilePath $scriptPath -Encoding ascii -Force
 
-                $result = Get-ResourceModulesInConfiguration -ConfigurationPath $scriptPath
+                $result = Get-ModulesInScript -Path $scriptPath
                 $result.Name | Should -Be $moduleName2
                 $result.Version | Should -Be $moduleVersion
             }
@@ -398,14 +392,11 @@ InModuleScope $script:ModuleName {
         Context 'When a script file requires two modules' {
             It 'Should return the correct module names' {
                 "
-                    Configuration Test
-                    {
-                        Import-PowerShellModule -ModuleName $moduleName1
-                        Import-PowerShellModule -ModuleName $moduleName2
-                    }
+                    Import-Module -Name $moduleName1
+                    Import-Module -Name $moduleName2
                 " | Out-File -FilePath $scriptPath -Encoding ascii -Force
 
-                $result = Get-ResourceModulesInConfiguration -ConfigurationPath $scriptPath
+                $result = Get-ModulesInScript -Path $scriptPath
                 $result.Count | Should -Be 2
                 $result[0].Name | Should -Be $moduleName1
                 $result[0].Version | Should -BeNullOrEmpty
@@ -417,13 +408,10 @@ InModuleScope $script:ModuleName {
         Context 'When a script file requires two modules which are written in an string array' {
             It 'Should return the correct module name when using an array' {
                 "
-                    Configuration Test
-                    {
-                        Import-PowerShellModule -ModuleName $arrayModuleName1,$arrayModuleName2
-                    }
+                    Import-Module -ModuleName $arrayModuleName1,$arrayModuleName2
                 " | Out-File -FilePath $scriptPath -Encoding ascii -Force
 
-                $result = Get-ResourceModulesInConfiguration -ConfigurationPath $scriptPath
+                $result = Get-ModulesInScript -Path $scriptPath
                 $result.Count | Should -Be 2
                 $result[0].Name | Should -Be $arrayModuleName1
                 $result[0].Version | Should -BeNullOrEmpty

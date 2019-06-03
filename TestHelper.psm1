@@ -1174,56 +1174,60 @@ function Get-RelativePathFromModuleRoot
 
 <#
     .SYNOPSIS
-        Gets an array of PowerShell modules imported in a DSC Configuration
-        file.
+        Gets an array of PowerShell modules imported in a script file.
 
-    .PARAMETER ConfigurationPath
-        The path to the configuration file to get the list from.
+    .PARAMETER Path
+        The path to the script file to get the list from.
 #>
-function Get-ResourceModulesInConfiguration {
+function Get-ModulesInScript
+{
     [CmdletBinding()]
     [OutputType([System.Collections.Hashtable[]])]
     param
     (
         [Parameter(Mandatory = $true)]
         [System.String]
-        $ConfigurationPath
+        $Path
     )
 
     # PowerShell modules
     $listedModules = @()
 
-    # Get the AST object for the configuration
-    $dscConfigurationAST = [System.Management.Automation.Language.Parser]::ParseFile($ConfigurationPath , [ref]$null, [ref]$Null)
+    $AST = [System.Management.Automation.Language.Parser]::ParseFile($Path , [ref]$null, [ref]$Null)
 
-    # Get all the Import-PowerShellModule module commands
-    $findAllImportPowerShellModules = {
+    # Get all the Import-Module module commands
+    $findAllImportModules = {
         $args[0] -is [System.Management.Automation.Language.DynamicKeywordStatementAst] `
-            -and $args[0].CommandElements[0].Value -eq 'Import-PowerShellModule'
+            -and $args[0].CommandElements[0].Value -eq 'Import-Module'
     }
 
-    $importPowerShellModuleCmds = $dscConfigurationAST.EndBlock.FindAll( $findAllImportPowerShellModules, $true )
+    $importModuleCmds = $AST.EndBlock.FindAll( $findAllImportModules, $true )
 
-    foreach ($importPowerShellModuleCmd in $importPowerShellModuleCmds) {
-        $parameterName = 'ModuleName'
-        $moduleName = ''
-        $moduleVersion = ''
+    foreach ($importModuleCmd in $importModuleCmds)
+    {
+        $parameterName = 'Name'
+        $minimumVersion = ''
 
-        foreach ($element in $importPowerShellModuleCmd.CommandElements) {
-            # For each element in the Import-PowerShellModule command determine what it means
+        foreach ($element in $importModuleCmd.CommandElements)
+        {
+            # For each element in the Import-Module command determine what it means
             if ($element -is [System.Management.Automation.Language.CommandParameterAst])
             {
                 $parameterName = $element.ParameterName
             }
             elseif ($element -is [System.Management.Automation.Language.StringConstantExpressionAst] `
-                    -and $element.Value -ne 'Import-PowerShellModule') {
-                switch ($parameterName) {
-                    'ModuleName' {
+                    -and $element.Value -ne 'Import-Module')
+            {
+                switch ($parameterName)
+                {
+                    'Name'
+                    {
                         $moduleName = $element.Value
                     } # ModuleName
 
-                    'ModuleVersion' {
-                        $moduleVersion = $element.Value
+                    'MinimumVersion'
+                    {
+                        $MinimumVersion = $element.Value
                     } # ModuleVersion
                 } # switch
             }
@@ -1233,7 +1237,8 @@ function Get-ResourceModulesInConfiguration {
                     This is an array of strings (usually something like xNetworking,xWebAdministration)
                     So we need to add each module to the list
                 #>
-                foreach ($item in $element.Elements) {
+                foreach ($item in $element.Elements)
+                {
                     $listedModules += @{
                         Name = $item.Value
                     }
@@ -1244,7 +1249,7 @@ function Get-ResourceModulesInConfiguration {
         # Did a module get identified when stepping through the elements?
         if (-not [String]::IsNullOrEmpty($moduleName))
         {
-            if ([String]::IsNullOrEmpty($moduleVersion))
+            if ([String]::IsNullOrEmpty($minimumVersion))
             {
                 $listedModules += @{
                     Name = $moduleName
@@ -1254,7 +1259,7 @@ function Get-ResourceModulesInConfiguration {
             {
                 $listedModules += @{
                     Name    = $moduleName
-                    Version = $moduleVersion
+                    Version = $minimumVersion
                 }
             }
         } # if
