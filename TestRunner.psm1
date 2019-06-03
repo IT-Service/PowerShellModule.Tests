@@ -1,14 +1,14 @@
 <#
     .SYNOPSIS
-        Runs all tests (including common tests) on all DSC resources in the given folder.
+        Runs all tests (including common tests) on all PowerShell modules in the given folder.
 
     .PARAMETER ResourcesPath
         The path to the folder containing the resources to be tested.
 
     .EXAMPLE
-        Start-DscResourceTests -ResourcesPath C:\DscResources\DscResources
+        Start-PowerShellModuleTests -ResourcesPath C:\PowerShellModules\PowerShellModules
 #>
-function Start-DscResourceTests
+function Start-PowerShellModuleTests
 {
     [CmdletBinding()]
     param
@@ -39,4 +39,4 @@ function Start-DscResourceTests
     Pop-Location
 }
 
-Export-ModuleMember -Function @( 'Start-DscResourceTests' )
+Export-ModuleMember -Function @( 'Start-PowerShellModuleTests' )

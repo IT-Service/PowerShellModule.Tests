@@ -18,11 +18,11 @@ if (-not ([System.Management.Automation.PSTypeName]'WikiExampleBlockType').Type)
 
 <#
     .SYNOPSIS
-        New-DscResourceWikiSite generates wiki pages that can be uploaded to GitHub to use as
+        New-PowerShellModuleWikiSite generates wiki pages that can be uploaded to GitHub to use as
         public documentation for a module.
 
     .DESCRIPTION
-        The New-DscResourceWikiSite cmdlet will review all of the MOF based resources
+        The New-PowerShellModuleWikiSite cmdlet will review all of the MOF based resources
         in a specified module directory and will output the Markdown files to the specified directory.
         These help files include details on the property types for each resource, as well as a text
         description and examples where they exist.
@@ -31,15 +31,15 @@ if (-not ([System.Management.Automation.PSTypeName]'WikiExampleBlockType').Type)
         Where should the files be saved to
 
     .PARAMETER ModulePath
-        The path to the root of the DSC resource module (where the PSD1 file is found, not the folder for
-        and individual DSC resource)
+        The path to the root of the PowerShell module (where the PSD1 file is found, not the folder for
+        and individual PowerShell module)
 
     .EXAMPLE
-        New-DscResourceWikiSite -ModulePath C:\repos\SharePointdsc -OutputPath C:\repos\SharePointDsc\en-US
+        New-PowerShellModuleWikiSite -ModulePath C:\repos\SharePointdsc -OutputPath C:\repos\SharePointDsc\en-US
 
         This example shows how to generate help for a specific module
 #>
-function New-DscResourceWikiSite
+function New-PowerShellModuleWikiSite
 {
     [CmdletBinding()]
     param
@@ -129,7 +129,7 @@ function New-DscResourceWikiSite
                 {
                     Write-Verbose -Message "Adding Example file '$($exampleFile.Name)' to wiki page for $($mofSchema.FriendlyName)"
 
-                    $exampleContent = Get-DscResourceWikiExampleContent `
+                    $exampleContent = Get-PowerShellModuleWikiExampleContent `
                         -ExamplePath $exampleFile.FullName `
                         -ExampleNumber ($exampleCount++)
 
@@ -165,13 +165,13 @@ function New-DscResourceWikiSite
         The number of the example.
 
     .EXAMPLE
-        Get-DscResourceWikiExampleContent -ExamplePath 'C:\repos\NetworkingDsc\Examples\Resources\DhcpClient\1-DhcpClient_EnableDHCP.ps1' -ExampleNumber 1
+        Get-PowerShellModuleWikiExampleContent -ExamplePath 'C:\repos\NetworkingDsc\Examples\Resources\DhcpClient\1-DhcpClient_EnableDHCP.ps1' -ExampleNumber 1
 
         Reads the content of 'C:\repos\NetworkingDsc\Examples\Resources\DhcpClient\1-DhcpClient_EnableDHCP.ps1'
         and converts it to markdown in preparation for being added to a resource wiki page.
 #>
 
-function Get-DscResourceWikiExampleContent
+function Get-PowerShellModuleWikiExampleContent
 {
     [CmdletBinding()]
     [OutputType([System.String])]
@@ -293,4 +293,4 @@ function Get-DscResourceWikiExampleContent
     return $exampleStringBuilder.ToString()
 }
 
-Export-ModuleMember -Function New-DscResourceWikiSite
+Export-ModuleMember -Function New-PowerShellModuleWikiSite

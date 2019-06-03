@@ -1,13 +1,13 @@
 $projectRootPath = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
-$moduleRootPath = Join-Path -Path $projectRootPath -ChildPath 'DscResource.GalleryDeploy'
-$modulePath = Join-Path -Path $moduleRootPath -ChildPath 'DscResource.GalleryDeploy.psm1'
+$moduleRootPath = Join-Path -Path $projectRootPath -ChildPath 'PowerShellModule.GalleryDeploy'
+$modulePath = Join-Path -Path $moduleRootPath -ChildPath 'PowerShellModule.GalleryDeploy.psm1'
 
 Import-Module -Name $modulePath -Force
 
 Import-Module -Name (Join-Path -Path (Join-Path -Path (Split-Path $PSScriptRoot -Parent) -ChildPath 'TestHelpers') -ChildPath 'CommonTestHelper.psm1') -Global
 
-InModuleScope -ModuleName 'DscResource.GalleryDeploy' {
-    Describe 'DscResource.GalleryDeploy\Start-GalleryDeploy' {
+InModuleScope -ModuleName 'PowerShellModule.GalleryDeploy' {
+    Describe 'PowerShellModule.GalleryDeploy\Start-GalleryDeploy' {
         BeforeAll {
             $mockGuid = 'bdec4a30-2ef5-4040-92b6-534da42ca447'
             $mockResourceModuleName = 'MyResourceModule'
@@ -151,7 +151,7 @@ InModuleScope -ModuleName 'DscResource.GalleryDeploy' {
                         Configuration TestConfig
                         {
                             # This tests that Install-DependentModule is called.
-                            Import-DscResource -ModuleName MyMockModule
+                            Import-PowerShellModule -ModuleName MyMockModule
                         }
                     '
 
@@ -492,7 +492,7 @@ InModuleScope -ModuleName 'DscResource.GalleryDeploy' {
         }
     }
 
-    Describe 'DscResource.GalleryDeploy\Test-PublishMetadata' {
+    Describe 'PowerShellModule.GalleryDeploy\Test-PublishMetadata' {
         Context 'When a script file contains the correct metadata' {
             BeforeAll {
                 Mock -CommandName Test-ScriptFileInfo
@@ -619,7 +619,7 @@ InModuleScope -ModuleName 'DscResource.GalleryDeploy' {
         }
     }
 
-    Describe 'DscResource.GalleryDeploy\Test-ConfigurationName' {
+    Describe 'PowerShellModule.GalleryDeploy\Test-ConfigurationName' {
         BeforeAll {
             $mockScriptPath = Join-Path -Path $TestDrive -ChildPath '99-TestConfig'
         }

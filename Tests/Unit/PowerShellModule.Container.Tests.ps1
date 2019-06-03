@@ -1,10 +1,10 @@
 $projectRootPath = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
-$moduleRootPath = Join-Path -Path $projectRootPath -ChildPath 'DscResource.Container'
-$modulePath = Join-Path -Path $moduleRootPath -ChildPath 'DscResource.Container.psm1'
+$moduleRootPath = Join-Path -Path $projectRootPath -ChildPath 'PowerShellModule.Container'
+$modulePath = Join-Path -Path $moduleRootPath -ChildPath 'PowerShellModule.Container.psm1'
 
 Import-Module -Name $modulePath -Force
 
-InModuleScope -ModuleName 'DscResource.Container' {
+InModuleScope -ModuleName 'PowerShellModule.Container' {
 
     <#
         Dynamically built scriptblock which variables inside are sent in
@@ -83,7 +83,7 @@ InModuleScope -ModuleName 'DscResource.Container' {
             -and $args[4] -eq 'powershell.exe'
     }
 
-    Describe 'DscResource.Container\Write-PesterItBlock' {
+    Describe 'PowerShellModule.Container\Write-PesterItBlock' {
         BeforeAll {
             Mock -CommandName 'Write-Host'
 
@@ -140,7 +140,7 @@ InModuleScope -ModuleName 'DscResource.Container' {
         }
     }
 
-    Describe 'DscResource.Container\Out-TestResult' {
+    Describe 'PowerShellModule.Container\Out-TestResult' {
         BeforeAll {
             Mock -CommandName 'Write-Host'
             Mock -CommandName 'Start-Sleep'
@@ -193,7 +193,7 @@ InModuleScope -ModuleName 'DscResource.Container' {
         }
     }
 
-    Describe 'DscResource.Container\Start-ContainerTest' {
+    Describe 'PowerShellModule.Container\Start-ContainerTest' {
         Context 'When start test for a container' {
             BeforeAll {
                 Mock -CommandName 'Write-Info'
@@ -250,7 +250,7 @@ InModuleScope -ModuleName 'DscResource.Container' {
         }
     }
 
-    Describe 'DscResource.Container\Out-MissedCommand' {
+    Describe 'PowerShellModule.Container\Out-MissedCommand' {
         BeforeAll {
             $mockMissedCommand = @(
                 [PSCustomObject] @{
@@ -332,7 +332,7 @@ InModuleScope -ModuleName 'DscResource.Container' {
         }
     }
 
-    Describe 'DscResource.Container\Copy-ItemToContainer' {
+    Describe 'PowerShellModule.Container\Copy-ItemToContainer' {
         BeforeAll {
             Mock -CommandName 'Write-Info'
 
@@ -385,7 +385,7 @@ InModuleScope -ModuleName 'DscResource.Container' {
         }
     }
 
-    Describe 'DscResource.Container\Copy-ItemFromContainer' {
+    Describe 'PowerShellModule.Container\Copy-ItemFromContainer' {
         BeforeAll {
             Mock -CommandName 'Write-Info'
 
@@ -438,7 +438,7 @@ InModuleScope -ModuleName 'DscResource.Container' {
         }
     }
 
-    Describe 'DscResource.Container\Get-ContainerLog' {
+    Describe 'PowerShellModule.Container\Get-ContainerLog' {
         BeforeAll {
             Mock -CommandName 'Write-Info'
 
@@ -499,7 +499,7 @@ InModuleScope -ModuleName 'DscResource.Container' {
         }
     }
 
-    Describe 'DscResource.Container\Wait-Container' {
+    Describe 'PowerShellModule.Container\Wait-Container' {
         BeforeAll {
             $exitCode = 1
 
@@ -627,7 +627,7 @@ InModuleScope -ModuleName 'DscResource.Container' {
         }
     }
 
-    Describe 'DscResource.Container\Start-Container' {
+    Describe 'PowerShellModule.Container\Start-Container' {
         BeforeAll {
             Mock -CommandName 'Write-Info'
 
@@ -671,7 +671,7 @@ InModuleScope -ModuleName 'DscResource.Container' {
         }
     }
 
-    Describe 'DscResource.Container\New-Container' {
+    Describe 'PowerShellModule.Container\New-Container' {
         BeforeAll {
             $mockIdentifier = '1A3'
             $mockName = 'TestContainer'

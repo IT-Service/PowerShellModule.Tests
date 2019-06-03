@@ -1,14 +1,14 @@
 <#
     .SYNOPSIS
-        This module provides functions for building and testing DSC Resources in AppVeyor.
+        This module provides functions for building and testing PowerShell modules in AppVeyor.
 
         These functions will only work if called within an AppVeyor CI build task.
 #>
 
 Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath 'TestHelper.psm1') -Force
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath 'DscResource.CodeCoverage')
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath 'PowerShellModule.CodeCoverage')
 # Import the module containing the container helper functions.
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath 'DscResource.Container')
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath 'PowerShellModule.Container')
 
 # Load the test helper module.
 $testHelperPath = Join-Path -Path $PSScriptRoot -ChildPath 'TestHelper.psm1'
@@ -17,7 +17,7 @@ Import-Module -Name $testHelperPath -Force
 <#
     .SYNOPSIS
         Prepares the AppVeyor build environment to perform tests and packaging on a
-        DSC Resource module.
+        PowerShell module.
 
         Performs the following tasks:
         1. Installs Nuget Package Provider DLL.
@@ -82,7 +82,7 @@ function Invoke-AppveyorInstallTask
 
 <#
     .SYNOPSIS
-        Executes the tests on a DSC Resource in the AppVeyor build environment.
+        Executes the tests on a PowerShell module in the AppVeyor build environment.
 
         Executes Start-CustomAppveyorTestTask if defined in .AppVeyor\CustomAppVeyorTasks.psm1
         in resource module repository.
@@ -128,7 +128,7 @@ function Invoke-AppveyorInstallTask
         common tests will run, followed by the unit tests. Finally the integration
         tests will be run in the order defined.
         Each integration test configuration file ('*.config.ps1') must be decorated
-        with an attribute `Microsoft.DscResourceKit.IntegrationTest` containing
+        with an attribute `Microsoft.PowerShellModuleKit.IntegrationTest` containing
         a named attribute argument 'OrderNumber' and be assigned a numeric value
         (`1`, `2`, `3`,..). If the integration test is not decorated with the
         attribute, then that test will run among the last tests, after all the
@@ -140,8 +140,8 @@ function Invoke-AppveyorInstallTask
         One or more relative paths to PowerShell modules, from the root module
         folder. For each relative folder it will recursively search the first
         level subfolders for PowerShell module files (.psm1).
-        Default to 'DSCResources', 'DSCClassResources', and 'Modules'.
-        This parameter is ignored when testing the DscResource.Tests repository
+        Default to 'PowerShellModules', 'DSCClassResources', and 'Modules'.
+        This parameter is ignored when testing the PowerShellModule.Tests repository
         since that repository is treated differently, and has hard-coded paths.
 #>
 function Invoke-AppveyorTestScriptTask
@@ -192,7 +192,7 @@ function Invoke-AppveyorTestScriptTask
         [Parameter(ParameterSetName = 'Default')]
         [String[]]
         $CodeCoveragePath = @(
-            'DSCResources',
+            'PowerShellModules',
             'DSCClassResources',
             'Modules'
         )
@@ -282,16 +282,16 @@ function Invoke-AppveyorTestScriptTask
 
                 Write-Warning -Message 'Code coverage statistics are being calculated. This will slow the start of the tests while the code matrix is built. Please be patient.'
 
-                # Only add code path for DSCResources if they exist.
+                # Only add code path for PowerShellModules if they exist.
                 $codeCoveragePaths = @(
                     "$env:APPVEYOR_BUILD_FOLDER\*.psm1"
                 )
 
-                if (Test-IsRepositoryDscResourceTests)
+                if (Test-IsRepositoryPowerShellModuleTests)
                 {
                     <#
-                        The repository being tested is DscResource.Tests.
-                        DscResource.Tests need a different set of paths for
+                        The repository being tested is PowerShellModule.Tests.
+                        PowerShellModule.Tests need a different set of paths for
                         code coverage.
                     #>
                     $codeCoveragePaths += "$env:APPVEYOR_BUILD_FOLDER\**\*.psm1"
@@ -329,14 +329,14 @@ function Invoke-AppveyorTestScriptTask
             $testFiles = Get-ChildItem @getChildItemParameters
 
             <#
-                If it is another repository other than DscResource.Tests
-                then remove the DscResource.Tests unit tests from the list
+                If it is another repository other than PowerShellModule.Tests
+                then remove the PowerShellModule.Tests unit tests from the list
                 of tests to run. Issue #189.
             #>
-            if (-not (Test-IsRepositoryDscResourceTests))
+            if (-not (Test-IsRepositoryPowerShellModuleTests))
             {
                 $testFiles = $testFiles | Where-Object -FilterScript {
-                    $_.FullName -notmatch 'DSCResource.Tests\\Tests'
+                    $_.FullName -notmatch 'PowerShellModule.Tests\\Tests'
                 }
             }
 
@@ -371,7 +371,7 @@ function Invoke-AppveyorTestScriptTask
                     by setting order number to zero (0).
                 #>
                 $testObjects | Where-Object -FilterScript {
-                    $_.TestPath -match 'DSCResource.Tests'
+                    $_.TestPath -match 'PowerShellModule.Tests'
                 } | ForEach-Object -Process {
                     $_.OrderNumber = 0
                 }
@@ -797,19 +797,19 @@ function Invoke-AppveyorTestScriptTask
 
         'Harness'
         {
-            # Copy the DSCResource.Tests folder into the folder containing the resource PSD1 file.
+            # Copy the PowerShellModule.Tests folder into the folder containing the resource PSD1 file.
             $dscTestsPath = Join-Path -Path $MainModulePath `
-                -ChildPath 'DSCResource.Tests'
+                -ChildPath 'PowerShellModule.Tests'
             Copy-Item -Path $PSScriptRoot -Destination $MainModulePath -Recurse
             $testHarnessPath = Join-Path -Path $env:APPVEYOR_BUILD_FOLDER `
                 -ChildPath $HarnessModulePath
 
-            # Execute the resource tests as well as the DSCResource.Tests\meta.tests.ps1
+            # Execute the resource tests as well as the PowerShellModule.Tests\meta.tests.ps1
             Import-Module -Name $testHarnessPath
             $results = & $HarnessFunctionName -TestResultsFile $testResultsFile `
                 -DscTestsPath $dscTestsPath
 
-            # Delete the DSCResource.Tests folder because it is not needed
+            # Delete the PowerShellModule.Tests folder because it is not needed
             Remove-Item -Path $dscTestsPath -Force -Recurse
             break
         }
@@ -1044,16 +1044,16 @@ function Invoke-AppveyorAfterTestTask
                               -ChildPath 'en-US'
         New-Item -Path $docoPath -ItemType Directory
 
-        # Clone the DSCResources Module to the repository folder
+        # Clone the PowerShellModules Module to the repository folder
         $docoHelperPath = Join-Path -Path $PSScriptRoot `
-            -ChildPath 'DscResource.DocumentationHelper\DscResource.DocumentationHelper.psd1'
+            -ChildPath 'PowerShellModule.DocumentationHelper\PowerShellModule.DocumentationHelper.psd1'
         Import-Module -Name $docoHelperPath
-        New-DscResourcePowerShellHelp -OutputPath $docoPath -ModulePath $MainModulePath -Verbose
+        New-PowerShellModulePowerShellHelp -OutputPath $docoPath -ModulePath $MainModulePath -Verbose
 
         # Generate the wiki content for the release and zip/publish it to appveyor
         $wikiContentPath = Join-Path -Path $env:APPVEYOR_BUILD_FOLDER -ChildPath "wikicontent"
         New-Item -Path $wikiContentPath -ItemType Directory
-        New-DscResourceWikiSite -OutputPath $wikiContentPath -ModulePath $MainModulePath -Verbose
+        New-PowerShellModuleWikiSite -OutputPath $wikiContentPath -ModulePath $MainModulePath -Verbose
 
         $zipFileName = Join-Path -Path $env:APPVEYOR_BUILD_FOLDER `
             -ChildPath "$($ResourceModuleName)_$($env:APPVEYOR_BUILD_VERSION)_wikicontent.zip"
@@ -1099,10 +1099,10 @@ function Invoke-AppveyorAfterTestTask
         version            = $env:APPVEYOR_BUILD_VERSION
         author             = $Author
         owners             = $Owners
-        licenseUrl         = "https://github.com/PowerShell/DscResources/blob/master/LICENSE"
+        licenseUrl         = "https://github.com/PowerShell/PowerShellModules/blob/master/LICENSE"
         projectUrl         = "https://github.com/$($env:APPVEYOR_REPO_NAME)"
         packageDescription = $ResourceModuleName
-        tags               = "DesiredStateConfiguration DSC DSCResourceKit"
+        tags               = "DesiredStateConfiguration DSC PowerShellModuleKit"
     }
     New-Nuspec @nuspecParams
 
@@ -1271,7 +1271,7 @@ function Invoke-AppVeyorDeployTask
     # Will only publish examples on pull request merge to master.
     if ($OptIn -contains 'PublishExample' -and $Branch -contains $env:APPVEYOR_REPO_BRANCH)
     {
-        Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath 'DscResource.GalleryDeploy')
+        Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath 'PowerShellModule.GalleryDeploy')
 
         $startGalleryDeployParameters = @{
             ResourceModuleName = $ResourceModuleName

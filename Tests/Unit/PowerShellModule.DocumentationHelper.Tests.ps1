@@ -1,5 +1,5 @@
 $projectRootPath = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
-$moduleRootPath = Join-Path -Path $projectRootPath -ChildPath 'DscResource.DocumentationHelper'
+$moduleRootPath = Join-Path -Path $projectRootPath -ChildPath 'PowerShellModule.DocumentationHelper'
 $modulePath = Join-Path -Path $moduleRootPath -ChildPath 'WikiPages.psm1'
 
 Import-Module -Name $modulePath -Force
@@ -14,7 +14,7 @@ InModuleScope -ModuleName 'WikiPages' {
     # Schema file info
     $script:expectedSchemaPath = Join-Path -Path $script:mockModulePath -ChildPath '\**\*.schema.mof'
     $script:mockSchemaFileName = 'MSFT_MyResource.schema.mof'
-    $script:mockSchemaFolder = Join-Path -Path $script:mockModulePath -ChildPath 'DSCResources\MSFT_MyResource'
+    $script:mockSchemaFolder = Join-Path -Path $script:mockModulePath -ChildPath 'PowerShellModules\MSFT_MyResource'
     $script:mockSchemaFilePath = Join-Path -Path $script:mockSchemaFolder -ChildPath $script:mockSchemaFileName
     $script:mockSchemaFiles = @(
         @{
@@ -83,7 +83,7 @@ Example description.
 ```powershell
 Configuration Example
 {
-    Import-DSCResource -ModuleName MyModule
+    Import-PowerShellModule -ModuleName MyModule
 
     Node localhost
     {
@@ -130,7 +130,7 @@ Example description.
 ```powershell
 Configuration Example
 {
-    Import-DSCResource -ModuleName MyModule
+    Import-PowerShellModule -ModuleName MyModule
 
     Node localhost
     {
@@ -145,7 +145,7 @@ Configuration Example
 ```
 '
 
-    Describe 'DscResource.DocumentationHelper\WikiPages.psm1\New-DscResourceWikiSite' {
+    Describe 'PowerShellModule.DocumentationHelper\WikiPages.psm1\New-PowerShellModuleWikiSite' {
         # Parameter filters
         $script:getChildItemSchema_parameterFilter = {
             $Path -eq $script:expectedSchemaPath
@@ -162,7 +162,7 @@ Configuration Example
         $script:getContentReadme_parameterFilter = {
             $Path -eq $script:mockReadmePath
         }
-        $script:getDscResourceWikiExampleContent_parameterFilter = {
+        $script:getPowerShellModuleWikiExampleContent_parameterFilter = {
             $ExamplePath -eq $script:mockExampleFilePath -and $ExampleNumber -eq 1
         }
         $script:outFile_parameterFilter = {
@@ -171,7 +171,7 @@ Configuration Example
         }
 
         # Function call parameters
-        $script:newDscResourceWikiSite_parameters = @{
+        $script:newPowerShellModuleWikiSite_parameters = @{
             OutputPath = $script:mockOutputPath
             ModulePath = $script:mockModulePath
             Verbose    = $true
@@ -185,7 +185,7 @@ Configuration Example
             }
 
             It 'Should not throw an exception' {
-                { New-DscResourceWikiSite @script:newDscResourceWikiSite_parameters } | Should -Not -Throw
+                { New-PowerShellModuleWikiSite @script:newPowerShellModuleWikiSite_parameters } | Should -Not -Throw
             }
 
             It 'Should call the expected mocks ' {
@@ -224,8 +224,8 @@ Configuration Example
                     -MockWith { $script:mockExampleFiles }
 
                 Mock `
-                    -CommandName Get-DscResourceWikiExampleContent `
-                    -ParameterFilter $script:getDscResourceWikiExampleContent_parameterFilter `
+                    -CommandName Get-PowerShellModuleWikiExampleContent `
+                    -ParameterFilter $script:getPowerShellModuleWikiExampleContent_parameterFilter `
                     -MockWith { $script:mockExampleContent }
 
                 Mock `
@@ -234,7 +234,7 @@ Configuration Example
             }
 
             It 'Should not throw an exception' {
-                { New-DscResourceWikiSite @script:newDscResourceWikiSite_parameters } | Should -Not -Throw
+                { New-PowerShellModuleWikiSite @script:newPowerShellModuleWikiSite_parameters } | Should -Not -Throw
             }
 
             It 'Should call the expected mocks ' {
@@ -264,8 +264,8 @@ Configuration Example
                     -Exactly -Times 1
 
                 Assert-MockCalled `
-                    -CommandName Get-DscResourceWikiExampleContent `
-                    -ParameterFilter $script:getDscResourceWikiExampleContent_parameterFilter `
+                    -CommandName Get-PowerShellModuleWikiExampleContent `
+                    -ParameterFilter $script:getPowerShellModuleWikiExampleContent_parameterFilter `
                     -Exactly -Times 1
 
                 Assert-MockCalled `
@@ -276,14 +276,14 @@ Configuration Example
         }
     }
 
-    Describe 'DscResource.DocumentationHelper\WikiPages.psm1\Get-DscResourceWikiExampleContent' {
+    Describe 'PowerShellModule.DocumentationHelper\WikiPages.psm1\Get-PowerShellModuleWikiExampleContent' {
         # Parameter filters
         $script:getContentExample_parameterFilter = {
             $Path -eq $script:mockExampleFilePath
         }
 
         Context 'When a path to an example file with .EXAMPLE is passed and example number 1' {
-            $script:getDscResourceWikiExampleContent_parameters = @{
+            $script:getPowerShellModuleWikiExampleContent_parameters = @{
                 ExamplePath   = $script:mockExampleFilePath
                 ExampleNumber = 1
                 Verbose       = $true
@@ -296,7 +296,7 @@ Example Description.
 ```powershell
 Configuration Example
 {
-    Import-DSCResource -ModuleName MyModule
+    Import-PowerShellModule -ModuleName MyModule
 
     Node localhost
     {
@@ -316,7 +316,7 @@ Example Description.
 #>
 Configuration Example
 {
-    Import-DSCResource -ModuleName MyModule
+    Import-PowerShellModule -ModuleName MyModule
 
     Node localhost
     {
@@ -337,7 +337,7 @@ Configuration Example
             }
 
             It 'Should not throw an exception' {
-                { $script:result = Get-DscResourceWikiExampleContent @script:getDscResourceWikiExampleContent_parameters } | Should -Not -Throw
+                { $script:result = Get-PowerShellModuleWikiExampleContent @script:getPowerShellModuleWikiExampleContent_parameters } | Should -Not -Throw
             }
 
             It 'Should return the expected string' {
@@ -353,7 +353,7 @@ Configuration Example
         }
 
         Context 'When a path to an example file with .DESCRIPTION is passed and example number 2' {
-            $script:getDscResourceWikiExampleContent_parameters = @{
+            $script:getPowerShellModuleWikiExampleContent_parameters = @{
                 ExamplePath   = $script:mockExampleFilePath
                 ExampleNumber = 2
                 Verbose       = $true
@@ -366,7 +366,7 @@ Example Description.
 ```powershell
 Configuration Example
 {
-    Import-DSCResource -ModuleName MyModule
+    Import-PowerShellModule -ModuleName MyModule
 
     Node localhost
     {
@@ -386,7 +386,7 @@ Configuration Example
 #>
 Configuration Example
 {
-    Import-DSCResource -ModuleName MyModule
+    Import-PowerShellModule -ModuleName MyModule
 
     Node localhost
     {
@@ -407,7 +407,7 @@ Configuration Example
             }
 
             It 'Should not throw an exception' {
-                { $script:result = Get-DscResourceWikiExampleContent @script:getDscResourceWikiExampleContent_parameters } | Should -Not -Throw
+                { $script:result = Get-PowerShellModuleWikiExampleContent @script:getPowerShellModuleWikiExampleContent_parameters } | Should -Not -Throw
             }
 
             It 'Should return the expected string' {
@@ -423,7 +423,7 @@ Configuration Example
         }
 
         Context 'When a path to an example file with .SYNOPSIS is passed and example number 3' {
-            $script:getDscResourceWikiExampleContent_parameters = @{
+            $script:getPowerShellModuleWikiExampleContent_parameters = @{
                 ExamplePath   = $script:mockExampleFilePath
                 ExampleNumber = 3
                 Verbose       = $true
@@ -436,7 +436,7 @@ Example Description.
 ```powershell
 Configuration Example
 {
-    Import-DSCResource -ModuleName MyModule
+    Import-PowerShellModule -ModuleName MyModule
 
     Node localhost
     {
@@ -456,7 +456,7 @@ Configuration Example
 #>
 Configuration Example
 {
-    Import-DSCResource -ModuleName MyModule
+    Import-PowerShellModule -ModuleName MyModule
 
     Node localhost
     {
@@ -477,7 +477,7 @@ Configuration Example
             }
 
             It 'Should not throw an exception' {
-                { $script:result = Get-DscResourceWikiExampleContent @script:getDscResourceWikiExampleContent_parameters } | Should -Not -Throw
+                { $script:result = Get-PowerShellModuleWikiExampleContent @script:getPowerShellModuleWikiExampleContent_parameters } | Should -Not -Throw
             }
 
             It 'Should return the expected string' {
@@ -493,7 +493,7 @@ Configuration Example
         }
 
         Context 'When a path to an example file with .SYNOPSIS and #Requires is passed and example number 4' {
-            $script:getDscResourceWikiExampleContent_parameters = @{
+            $script:getPowerShellModuleWikiExampleContent_parameters = @{
                 ExamplePath   = $script:mockExampleFilePath
                 ExampleNumber = 4
                 Verbose       = $true
@@ -506,7 +506,7 @@ Example Description.
 ```powershell
 Configuration Example
 {
-    Import-DSCResource -ModuleName MyModule
+    Import-PowerShellModule -ModuleName MyModule
 
     Node localhost
     {
@@ -529,7 +529,7 @@ Configuration Example
 #>
 Configuration Example
 {
-    Import-DSCResource -ModuleName MyModule
+    Import-PowerShellModule -ModuleName MyModule
 
     Node localhost
     {
@@ -550,7 +550,7 @@ Configuration Example
             }
 
             It 'Should not throw an exception' {
-                { $script:result = Get-DscResourceWikiExampleContent @script:getDscResourceWikiExampleContent_parameters } | Should -Not -Throw
+                { $script:result = Get-PowerShellModuleWikiExampleContent @script:getPowerShellModuleWikiExampleContent_parameters } | Should -Not -Throw
             }
 
             It 'Should return the expected string' {
@@ -566,7 +566,7 @@ Configuration Example
         }
 
         Context 'When a path to an example file with .DESCRIPTION, #Requires and PSScriptInfo is passed and example number 5' {
-            $script:getDscResourceWikiExampleContent_parameters = @{
+            $script:getPowerShellModuleWikiExampleContent_parameters = @{
                 ExamplePath   = $script:mockExampleFilePath
                 ExampleNumber = 5
                 Verbose       = $true
@@ -579,7 +579,7 @@ Example Description.
 ```powershell
 Configuration Example
 {
-    Import-DSCResource -ModuleName MyModule
+    Import-PowerShellModule -ModuleName MyModule
 
     Node localhost
     {
@@ -619,7 +619,7 @@ Configuration Example
 #>
 Configuration Example
 {
-    Import-DSCResource -ModuleName MyModule
+    Import-PowerShellModule -ModuleName MyModule
 
     Node localhost
     {
@@ -640,7 +640,7 @@ Configuration Example
             }
 
             It 'Should not throw an exception' {
-                { $script:result = Get-DscResourceWikiExampleContent @script:getDscResourceWikiExampleContent_parameters } | Should -Not -Throw
+                { $script:result = Get-PowerShellModuleWikiExampleContent @script:getPowerShellModuleWikiExampleContent_parameters } | Should -Not -Throw
             }
 
             It 'Should return the expected string' {
@@ -656,7 +656,7 @@ Configuration Example
         }
 
         Context 'When a path to an example file with .SYNOPSIS, .DESCRIPTION and PSScriptInfo is passed and example number 6' {
-            $script:getDscResourceWikiExampleContent_parameters = @{
+            $script:getPowerShellModuleWikiExampleContent_parameters = @{
                 ExamplePath   = $script:mockExampleFilePath
                 ExampleNumber = 6
                 Verbose       = $true
@@ -671,7 +671,7 @@ Example Description.
 ```powershell
 Configuration Example
 {
-    Import-DSCResource -ModuleName MyModule
+    Import-PowerShellModule -ModuleName MyModule
 
     Node localhost
     {
@@ -711,7 +711,7 @@ Configuration Example
 #>
 Configuration Example
 {
-    Import-DSCResource -ModuleName MyModule
+    Import-PowerShellModule -ModuleName MyModule
 
     Node localhost
     {
@@ -732,7 +732,7 @@ Configuration Example
             }
 
             It 'Should not throw an exception' {
-                { $script:result = Get-DscResourceWikiExampleContent @script:getDscResourceWikiExampleContent_parameters } | Should -Not -Throw
+                { $script:result = Get-PowerShellModuleWikiExampleContent @script:getPowerShellModuleWikiExampleContent_parameters } | Should -Not -Throw
             }
 
             It 'Should return the expected string' {
@@ -748,7 +748,7 @@ Configuration Example
         }
 
         Context 'When a path to an example file from SharePointDsc resource module and example number 7' {
-            $script:getDscResourceWikiExampleContent_parameters = @{
+            $script:getPowerShellModuleWikiExampleContent_parameters = @{
                 ExamplePath   = $script:mockExampleFilePath
                 ExampleNumber = 7
                 Verbose       = $true
@@ -766,7 +766,7 @@ This example shows how to deploy Access Services 2013 to the local SharePoint fa
             [PSCredential]
             $SetupAccount
         )
-        Import-DscResource -ModuleName SharePointDsc
+        Import-PowerShellModule -ModuleName SharePointDsc
 
         node localhost {
             SPAccessServiceApp AccessServices
@@ -792,7 +792,7 @@ This example shows how to deploy Access Services 2013 to the local SharePoint fa
             [PSCredential]
             $SetupAccount
         )
-        Import-DscResource -ModuleName SharePointDsc
+        Import-PowerShellModule -ModuleName SharePointDsc
 
         node localhost {
             SPAccessServiceApp AccessServices
@@ -813,7 +813,7 @@ This example shows how to deploy Access Services 2013 to the local SharePoint fa
             }
 
             It 'Should not throw an exception' {
-                { $script:result = Get-DscResourceWikiExampleContent @script:getDscResourceWikiExampleContent_parameters } | Should -Not -Throw
+                { $script:result = Get-PowerShellModuleWikiExampleContent @script:getPowerShellModuleWikiExampleContent_parameters } | Should -Not -Throw
             }
 
             It 'Should return the expected string' {
@@ -830,7 +830,7 @@ This example shows how to deploy Access Services 2013 to the local SharePoint fa
     }
 
     Context 'When a path to an example file from CertificateDsc resource module and example number 8' {
-        $script:getDscResourceWikiExampleContent_parameters = @{
+        $script:getPowerShellModuleWikiExampleContent_parameters = @{
             ExamplePath   = $script:mockExampleFilePath
             ExampleNumber = 8
             Verbose       = $true
@@ -843,7 +843,7 @@ Exports a certificate as a CERT using the friendly name to identify it.
 ```powershell
 Configuration CertificateExport_CertByFriendlyName_Config
 {
-    Import-DscResource -ModuleName CertificateDsc
+    Import-PowerShellModule -ModuleName CertificateDsc
 
     Node localhost
     {
@@ -882,7 +882,7 @@ Configuration CertificateExport_CertByFriendlyName_Config
 #>
 Configuration CertificateExport_CertByFriendlyName_Config
 {
-    Import-DscResource -ModuleName CertificateDsc
+    Import-PowerShellModule -ModuleName CertificateDsc
 
     Node localhost
     {
@@ -903,7 +903,7 @@ Configuration CertificateExport_CertByFriendlyName_Config
         }
 
         It 'Should not throw an exception' {
-            { $script:result = Get-DscResourceWikiExampleContent @script:getDscResourceWikiExampleContent_parameters } | Should -Not -Throw
+            { $script:result = Get-PowerShellModuleWikiExampleContent @script:getPowerShellModuleWikiExampleContent_parameters } | Should -Not -Throw
         }
 
         It 'Should return the expected string' {

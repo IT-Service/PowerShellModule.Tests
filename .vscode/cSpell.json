@@ -49,7 +49,7 @@
         "#psscriptanalyzer-rules",
         "#metafixers-module",
         "#testhelper-module",
-        "#example-usage-of-dscresourcetests-in-appveyoryml",
+        "#example-usage-of-powershellmoduletests-in-appveyoryml",
         "#codecoverage-reporting-with-codecovio",
         "#enable-reporting-to-codecovio",
         "#configure-codecovio"

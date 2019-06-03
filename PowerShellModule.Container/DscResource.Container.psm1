@@ -2,7 +2,7 @@ $projectRootPath = Split-Path -Path $PSScriptRoot -Parent
 $testHelperPath = Join-Path -Path $projectRootPath -ChildPath 'TestHelper.psm1'
 Import-Module -Name $testHelperPath -Force
 
-$script:localizedData = Get-LocalizedData -ModuleName 'DscResource.Container' -ModuleRoot $PSScriptRoot
+$script:localizedData = Get-LocalizedData -ModuleName 'PowerShellModule.Container' -ModuleRoot $PSScriptRoot
 
 <#
     .SYNOPSIS
@@ -191,7 +191,7 @@ function New-Container
     $containerTestPath = '@("{0}")' -f ($TestPath -join '", "')
 
     # Builds the final command arguments that is used with the call to powershell.exe.
-    $containerScript = 'Import-Module -Name ''{0}\DscResource.Tests\DscResource.Container'';Start-ContainerTest -ContainerName {1} -Path {0} -TestPath {2}' -f $ProjectPath, $Name, $containerTestPath
+    $containerScript = 'Import-Module -Name ''{0}\PowerShellModule.Tests\PowerShellModule.Container'';Start-ContainerTest -ContainerName {1} -Path {0} -TestPath {2}' -f $ProjectPath, $Name, $containerTestPath
 
     if ($PSBoundParameters.ContainsKey('CodeCoverage'))
     {

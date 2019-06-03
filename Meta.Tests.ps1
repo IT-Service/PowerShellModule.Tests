@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        Common tests for all resource modules in the DSC Resource Kit.
+        Common tests for all resource modules in the PowerShell module Kit.
 #>
 # Suppressing this because we need to generate a mocked credentials that will be passed along to the examples that are needed in the tests.
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingConvertToSecureStringWithPlainText", "")]
@@ -23,29 +23,29 @@ if ($null -ne $skipAllCommonTests -and $skipAllCommonTests.Value -eq $true)
 $moduleRootFilePath = Split-Path -Path $PSScriptRoot -Parent
 
 <#
-    This is a workaround to be able to run these common test on DscResource.Tests
+    This is a workaround to be able to run these common test on PowerShellModule.Tests
     module, for testing itself.
 #>
-if (Test-IsRepositoryDscResourceTests)
+if (Test-IsRepositoryPowerShellModuleTests)
 {
     $moduleRootFilePath = $PSScriptRoot
 
     <#
-        Because the repository name of 'DscResource.Tests' has punctuation in
+        Because the repository name of 'PowerShellModule.Tests' has punctuation in
         the name, AppVeyor replaces that with a dash when it creates the folder
-        structure, so the folder name becomes 'dscresource-tests'.
+        structure, so the folder name becomes 'powershellmodule-tests'.
         This sets the module name to the correct name.
-        If the name can be detected in a better way, for DscResource.Tests
+        If the name can be detected in a better way, for PowerShellModule.Tests
         and all other modules, then this could be removed.
     #>
-    $moduleName = 'DscResource.Tests'
+    $moduleName = 'PowerShellModule.Tests'
 }
 else
 {
     $moduleName = (Get-Item -Path $moduleRootFilePath).Name
 }
 
-$dscResourcesFolderFilePath = Join-Path -Path $moduleRootFilePath -ChildPath 'DscResources'
+$dscResourcesFolderFilePath = Join-Path -Path $moduleRootFilePath -ChildPath 'PowerShellModules'
 
 # Identify the repository root path of the resource module
 $repoRootPath = $moduleRootFilePath
@@ -65,7 +65,7 @@ while (-not $repoRootPathFound `
 }
 if (-not $repoRootPathFound)
 {
-    Write-Warning -Message ('The root folder of the DSC Resource repository could ' + `
+    Write-Warning -Message ('The root folder of the PowerShell module repository could ' + `
             'not be located. This may prevent some markdown files from being checked for ' + `
             'errors. Please ensure this repository has been cloned using Git.')
     $repoRootPath = $moduleRootFilePath
@@ -99,8 +99,8 @@ Describe 'Common Tests - Relative Path Length' {
         $allModuleFiles = Get-ChildItem -Path $moduleRootFilePath -Recurse
 
         $allModuleFiles = $allModuleFiles | Where-Object -FilterScript {
-            # Skip all files under DscResource.Tests.
-            $_.FullName -notmatch 'DscResource\.Tests'
+            # Skip all files under PowerShellModule.Tests.
+            $_.FullName -notmatch 'PowerShellModule\.Tests'
         }
 
         $testCaseModuleFile = @()
@@ -341,7 +341,7 @@ Describe 'Common Tests - Module Manifest' {
     <#
         ErrorAction specified as SilentelyContinue because this call will throw an error
         on machines with an older PS version than the manifest requires. WMF 5.1 machines
-        are not yet available on AppVeyor, so modules that require 5.1 (PSDscResources)
+        are not yet available on AppVeyor, so modules that require 5.1 (PSPowerShellModules)
         would always crash this test.
     #>
     $moduleManifestProperties = Test-ModuleManifest -Path $moduleManifestPath -ErrorAction 'SilentlyContinue'
@@ -357,8 +357,8 @@ Describe 'Common Tests - Module Manifest' {
         Context 'Requirements for manifest of module with class-based resources' {
             foreach ($classResourceInModule in $classResourcesInModule)
             {
-                It "Should explicitly export $classResourceInModule in DscResourcesToExport" {
-                    $moduleManifestProperties.ExportedDscResources -contains $classResourceInModule | Should -Be $true
+                It "Should explicitly export $classResourceInModule in PowerShellModulesToExport" {
+                    $moduleManifestProperties.ExportedPowerShellModules -contains $classResourceInModule | Should -Be $true
                 }
 
                 It "Should include class module $classResourceInModule.psm1 in NestedModules" {
@@ -370,7 +370,7 @@ Describe 'Common Tests - Module Manifest' {
 }
 
 Describe 'Common Tests - Script Resource Schema Validation' {
-    Import-xDscResourceDesigner
+    Import-xPowerShellModuleDesigner
 
     $scriptResourceNames = Get-ModuleScriptResourceNames -ModulePath $moduleRootFilePath
     foreach ($scriptResourceName in $scriptResourceNames)
@@ -378,8 +378,8 @@ Describe 'Common Tests - Script Resource Schema Validation' {
         Context $scriptResourceName {
             $scriptResourcePath = Join-Path -Path $dscResourcesFolderFilePath -ChildPath $scriptResourceName
 
-            It 'Should pass Test-xDscResource' {
-                Test-xDscResource -Name $scriptResourcePath | Should -Be $true
+            It 'Should pass Test-xPowerShellModule' {
+                Test-xPowerShellModule -Name $scriptResourcePath | Should -Be $true
             }
 
             It 'Should pass Test-xDscSchema' {
@@ -444,7 +444,7 @@ Describe 'Common Tests - PS Script Analyzer on Resource Files' {
             'PSAvoidUsingConvertToSecureStringWithPlainText',
             'PSAvoidUsingPlainTextForPassword',
             'PSAvoidUsingUsernameAndPasswordParams',
-            'PSDSCUseVerboseMessageInDSCResource',
+            'PSDSCUseVerboseMessageInPowerShellModule',
             'PSShouldProcess',
             'PSUseDeclaredVarsMoreThanAssigments',
             'PSUsePSCredentialType'
@@ -557,15 +557,15 @@ Describe 'Common Tests - PS Script Analyzer on Resource Files' {
                     $requiredRuleIsSuppressed | Should -Be $false
                 }
 
-                It 'Should pass all custom DSC Resource Kit PSSA rules' {
-                    $customDscResourceAnalyzerRulesPath = Join-Path -Path $PSScriptRoot -ChildPath 'DscResource.AnalyzerRules'
+                It 'Should pass all custom PowerShell module Kit PSSA rules' {
+                    $customPowerShellModuleAnalyzerRulesPath = Join-Path -Path $PSScriptRoot -ChildPath 'PowerShellModule.AnalyzerRules'
                     $customPssaRulesOutput = Invoke-ScriptAnalyzer @invokeScriptAnalyzerParameters `
-                        -CustomRulePath $customDscResourceAnalyzerRulesPath `
+                        -CustomRulePath $customPowerShellModuleAnalyzerRulesPath `
                         -Severity 'Warning'
 
                     if ($null -ne $customPssaRulesOutput)
                     {
-                        Write-PsScriptAnalyzerWarning -PssaRuleOutput $customPssaRulesOutput -RuleType 'Custom DSC Resource Kit'
+                        Write-PsScriptAnalyzerWarning -PssaRuleOutput $customPssaRulesOutput -RuleType 'Custom PowerShell module Kit'
                     }
 
                     if ($null -ne $customPssaRulesOutput -and (Get-OptInStatus -OptIns $optIns -Name 'Common Tests - Custom Script Analyzer Rules'))
@@ -773,7 +773,7 @@ Describe 'Common Tests - Validate Example Files To Be Published' -Tag 'Examples'
     if ($optIn -and (Test-Path -Path $examplesPath))
     {
         # We need helper functions from this module.
-        Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath 'DscResource.GalleryDeploy')
+        Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath 'PowerShellModule.GalleryDeploy')
 
         <#
             For Appveyor builds copy the module to the system modules directory so it falls in to a PSModulePath folder and is
@@ -919,7 +919,7 @@ Describe 'Common Tests - Validate Markdown Files' -Tag 'Markdown' {
             }
             else
             {
-                Write-Verbose -Message 'Using markdownlint settings file from DscResource.Test repository.' -Verbose
+                Write-Verbose -Message 'Using markdownlint settings file from PowerShellModule.Test repository.' -Verbose
                 $markdownlintSettingsFilePath = $null
             }
 
@@ -934,7 +934,7 @@ Describe 'Common Tests - Validate Markdown Files' -Tag 'Markdown' {
                         '--silent',
                         '--rootpath',
                         $repoRootPath,
-                        '--dscresourcespath',
+                        '--powershellmodulespath',
                         $dscResourcesFolderFilePath
                     )
 
@@ -1137,7 +1137,7 @@ Describe 'Common Tests - Spellcheck Files' -Tag 'Spellcheck' {
 There were spelling errors. If these are false negatives, then please add the
 word or phrase to the settings file '/.vscode/cSpell.json' in the repository.
 See this section for more information.
-https://github.com/PowerShell/DscResource.Tests/#common-tests-spellcheck-markdownfiles
+https://github.com/PowerShell/PowerShellModule.Tests/#common-tests-spellcheck-markdownfiles
 
 "@
 
@@ -1250,7 +1250,7 @@ Describe 'Common Tests - Validate Localization' {
     # Due to verbose output, only run these test if opt-in.
     if ($optIn)
     {
-        $allFolders = Get-ChildItem -Path (Join-Path -Path $moduleRootFilePath -ChildPath 'DscResources') -Directory
+        $allFolders = Get-ChildItem -Path (Join-Path -Path $moduleRootFilePath -ChildPath 'PowerShellModules') -Directory
         $allFolders += Get-ChildItem -Path (Join-Path -Path $moduleRootFilePath -ChildPath 'Modules') -Directory
         $allFolders = $allFolders | Sort-Object -Property Name
 

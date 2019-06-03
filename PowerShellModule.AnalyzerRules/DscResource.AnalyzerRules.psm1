@@ -1,7 +1,7 @@
 #Requires -Version 4.0
 
 # Import helper module
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath 'DscResource.AnalyzerRules.Helper.psm1')
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath 'PowerShellModule.AnalyzerRules.Helper.psm1')
 
 # Import Localized Data
 Import-LocalizedData -BindingVariable localizedData

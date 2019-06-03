@@ -17,17 +17,17 @@ InModuleScope $script:ModuleName {
             ' | Out-File -FilePath $filePath_NoAttribute
 
             '
-            [Microsoft.DscResourceKit.IntegrationTest(UnknownParameter = 2)]
+            [Microsoft.PowerShellModuleKit.IntegrationTest(UnknownParameter = 2)]
             param()
             ' | Out-File -FilePath $filePath_WrongAttribute
 
             '
-            [Microsoft.DscResourceKit.IntegrationTest(OrderNumber = 2)]
+            [Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 2)]
             param()
             ' | Out-File -FilePath $filePath_CorrectAttribute
 
             '
-            [Microsoft.DscResourceKit.IntegrationTest(OrderNumber = 2, UnknownParameter = ''Test'')]
+            [Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 2, UnknownParameter = ''Test'')]
             param()
             ' | Out-File -FilePath $filePath_CorrectAttributeWithExtraNamedArgument
 
@@ -82,22 +82,22 @@ InModuleScope $script:ModuleName {
                 ' | Out-File -FilePath $filePath_NoAttribute
 
                 '
-                [Microsoft.DscResourceKit.IntegrationTest(UnknownParameter = 2)]
+                [Microsoft.PowerShellModuleKit.IntegrationTest(UnknownParameter = 2)]
                 param()
                 ' | Out-File -FilePath $filePath_WrongAttribute
 
                 ('
-                [Microsoft.DscResourceKit.IntegrationTest(ContainerName = ''{0}'')]
+                [Microsoft.PowerShellModuleKit.IntegrationTest(ContainerName = ''{0}'')]
                 param()
                 ' -f $mockContainerName) | Out-File -FilePath $filePath_CorrectAttributeOnlyContainerName
 
                 ('
-                [Microsoft.DscResourceKit.IntegrationTest(ContainerName = ''{0}'', ContainerImage = ''{1}'')]
+                [Microsoft.PowerShellModuleKit.IntegrationTest(ContainerName = ''{0}'', ContainerImage = ''{1}'')]
                 param()
                 ' -f $mockContainerName, $mockContainerImageName) | Out-File -FilePath $filePath_CorrectAttribute
 
                 ('
-                [Microsoft.DscResourceKit.IntegrationTest(OrderNumber = 1, ContainerName = ''{0}'', ContainerImage = ''{1}'')]
+                [Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 1, ContainerName = ''{0}'', ContainerImage = ''{1}'')]
                 param()
                 ' -f $mockContainerName, $mockContainerImageName) | Out-File -FilePath $filePath_CorrectAttributeWithOrderNumber
             }
@@ -157,17 +157,17 @@ InModuleScope $script:ModuleName {
                 ' | Out-File -FilePath $filePath_NoAttribute
 
                 '
-                [Microsoft.DscResourceKit.UnitTest(UnknownParameter = 2)]
+                [Microsoft.PowerShellModuleKit.UnitTest(UnknownParameter = 2)]
                 param()
                 ' | Out-File -FilePath $filePath_WrongAttribute
 
                 ('
-                [Microsoft.DscResourceKit.UnitTest(ContainerName = ''{0}'')]
+                [Microsoft.PowerShellModuleKit.UnitTest(ContainerName = ''{0}'')]
                 param()
                 ' -f $mockContainerName) | Out-File -FilePath $filePath_CorrectAttributeOnlyContainerName
 
                 ('
-                [Microsoft.DscResourceKit.UnitTest(ContainerName = ''{0}'', ContainerImage = ''{1}'')]
+                [Microsoft.PowerShellModuleKit.UnitTest(ContainerName = ''{0}'', ContainerImage = ''{1}'')]
                 param()
                 ' -f $mockContainerName, $mockContainerImageName) | Out-File -FilePath $filePath_CorrectAttribute
             }
@@ -207,8 +207,8 @@ InModuleScope $script:ModuleName {
     }
 
 
-    Describe 'TestHelper\Test-IsRepositoryDscResourceTests' {
-        Context 'When the repository is DscResource.Tests' {
+    Describe 'TestHelper\Test-IsRepositoryPowerShellModuleTests' {
+        Context 'When the repository is PowerShellModule.Tests' {
             BeforeAll {
                 Mock -CommandName 'Split-Path'
                 Mock -CommandName 'Get-ChildItem' -MockWith {
@@ -217,14 +217,14 @@ InModuleScope $script:ModuleName {
             }
 
             It 'Should return $true' {
-                Test-IsRepositoryDscResourceTests | Should -Be $true
+                Test-IsRepositoryPowerShellModuleTests | Should -Be $true
 
                 Assert-MockCalled -CommandName 'Split-Path' -Exactly -Times 1 -Scope It
                 Assert-MockCalled -CommandName 'Get-ChildItem' -Exactly -Times 1 -Scope It
             }
         }
 
-        Context 'When the repository is not DscResource.Tests' {
+        Context 'When the repository is not PowerShellModule.Tests' {
             BeforeAll {
                 Mock -CommandName 'Split-Path'
                 Mock -CommandName 'Get-ChildItem' -MockWith {
@@ -233,7 +233,7 @@ InModuleScope $script:ModuleName {
             }
 
             It 'Should return $false' {
-                Test-IsRepositoryDscResourceTests | Should -Be $false
+                Test-IsRepositoryPowerShellModuleTests | Should -Be $false
 
                 Assert-MockCalled -CommandName 'Split-Path' -Exactly -Times 1 -Scope It
                 Assert-MockCalled -CommandName 'Get-ChildItem' -Exactly -Times 1 -Scope It
@@ -370,7 +370,7 @@ InModuleScope $script:ModuleName {
                 "
                     Configuration Test
                     {
-                        Import-DscResource -ModuleName $moduleName1
+                        Import-PowerShellModule -ModuleName $moduleName1
                     }
                 " | Out-File -FilePath $scriptPath -Encoding ascii -Force
 
@@ -385,7 +385,7 @@ InModuleScope $script:ModuleName {
                 "
                     Configuration Test
                     {
-                        Import-DscResource -ModuleName $moduleName2 -ModuleVersion $moduleVersion
+                        Import-PowerShellModule -ModuleName $moduleName2 -ModuleVersion $moduleVersion
                     }
                 " | Out-File -FilePath $scriptPath -Encoding ascii -Force
 
@@ -400,8 +400,8 @@ InModuleScope $script:ModuleName {
                 "
                     Configuration Test
                     {
-                        Import-DscResource -ModuleName $moduleName1
-                        Import-DscResource -ModuleName $moduleName2
+                        Import-PowerShellModule -ModuleName $moduleName1
+                        Import-PowerShellModule -ModuleName $moduleName2
                     }
                 " | Out-File -FilePath $scriptPath -Encoding ascii -Force
 
@@ -419,7 +419,7 @@ InModuleScope $script:ModuleName {
                 "
                     Configuration Test
                     {
-                        Import-DscResource -ModuleName $arrayModuleName1,$arrayModuleName2
+                        Import-PowerShellModule -ModuleName $arrayModuleName1,$arrayModuleName2
                     }
                 " | Out-File -FilePath $scriptPath -Encoding ascii -Force
 
@@ -677,7 +677,7 @@ InModuleScope $script:ModuleName {
         BeforeAll {
             $resourceName1 = 'TestResource1'
             $resourceName2 = 'TestResource2'
-            $resourcesPath = Join-Path -Path $TestDrive -ChildPath 'DscResources'
+            $resourcesPath = Join-Path -Path $TestDrive -ChildPath 'PowerShellModules'
             $testResourcePath1 = (Join-Path -Path $resourcesPath -ChildPath $resourceName1)
             $testResourcePath2 = (Join-Path -Path $resourcesPath -ChildPath $resourceName2)
 
@@ -704,7 +704,7 @@ InModuleScope $script:ModuleName {
             BeforeAll {
                 $resourceName1 = 'TestResource1'
                 $resourceName2 = 'TestResource2'
-                $resourcesPath = Join-Path -Path $TestDrive -ChildPath 'DscResources'
+                $resourcesPath = Join-Path -Path $TestDrive -ChildPath 'PowerShellModules'
                 $testResourcePath1 = (Join-Path -Path $resourcesPath -ChildPath $resourceName1)
                 $testResourcePath2 = (Join-Path -Path $resourcesPath -ChildPath $resourceName2)
 
@@ -886,12 +886,12 @@ InModuleScope $script:ModuleName {
         Context 'When querying for the name of a class-based resource' {
             It 'Should return the correct name of the resource' {
                 "
-                [DscResource()]
+                [PowerShellModule()]
                 class $mockResourceName1
                 {
                 }
 
-                [DscResource()]
+                [PowerShellModule()]
                 class $mockResourceName2
                 {
                 }
@@ -916,12 +916,12 @@ InModuleScope $script:ModuleName {
         Context 'When module file contain class-based resources' {
             It 'Should return $true' {
                 "
-                [DscResource()]
+                [PowerShellModule()]
                 class $mockResourceName1
                 {
                 }
 
-                [DscResource()]
+                [PowerShellModule()]
                 class $mockResourceName2
                 {
                 }
@@ -983,7 +983,7 @@ InModuleScope $script:ModuleName {
                     TestDescription = 'when restoring from a unit test'
                     TestEnvironment = @{
                         DSCModuleName      = 'TestModule'
-                        DSCResourceName    = 'TestResource'
+                        PowerShellModuleName    = 'TestResource'
                         TestType           = 'Unit'
                         ImportedModulePath = $moduleToImportFilePath
                         OldPSModulePath    = $env:PSModulePath
@@ -995,7 +995,7 @@ InModuleScope $script:ModuleName {
                     TestDescription = 'when restoring from an integration test'
                     TestEnvironment = @{
                         DSCModuleName      = 'TestModule'
-                        DSCResourceName    = 'TestResource'
+                        PowerShellModuleName    = 'TestResource'
                         TestType           = 'Integration'
                         ImportedModulePath = $moduleToImportFilePath
                         OldPSModulePath    = $env:PSModulePath
@@ -1031,7 +1031,7 @@ InModuleScope $script:ModuleName {
             It 'Should restore without throwing and call the correct mocks' {
                 $testEnvironmentParameter = @{
                     DSCModuleName      = 'TestModule'
-                    DSCResourceName    = 'TestResource'
+                    PowerShellModuleName    = 'TestResource'
                     TestType           = 'Integration'
                     ImportedModulePath = $moduleToImportFilePath
                     OldPSModulePath    = 'Wrong paths'
@@ -1074,7 +1074,7 @@ InModuleScope $script:ModuleName {
             It 'Should restore without throwing' {
                 $testEnvironmentParameter = @{
                     DSCModuleName      = 'TestModule'
-                    DSCResourceName    = 'TestResource'
+                    PowerShellModuleName    = 'TestResource'
                     TestType           = 'Integration'
                     ImportedModulePath = $moduleToImportFilePath
                     OldPSModulePath    = $env:PSModulePath
@@ -1092,7 +1092,7 @@ InModuleScope $script:ModuleName {
         Context 'When initializing the test environment' {
             BeforeAll {
                 $mockDscModuleName = 'TestModule'
-                $mockDscResourceName = 'TestResource'
+                $mockPowerShellModuleName = 'TestResource'
 
                 Mock -CommandName 'Set-PSModulePath'
                 Mock -CommandName 'Reset-DSC'
@@ -1114,19 +1114,19 @@ InModuleScope $script:ModuleName {
                 $filePath = Join-Path -Path $TestDrive -ChildPath ('{0}.psd1' -f $mockDscModuleName)
                 'test manifest' | Out-File -FilePath $filePath -Encoding ascii
 
-                $mockDscResourcesPath = Join-Path -Path $TestDrive -ChildPath 'DSCResources'
+                $mockPowerShellModulesPath = Join-Path -Path $TestDrive -ChildPath 'PowerShellModules'
                 $mockDscClassResourcesPath = Join-Path -Path $TestDrive -ChildPath 'DSCClassResources'
-                New-Item -Path $mockDscResourcesPath -ItemType Directory
+                New-Item -Path $mockPowerShellModulesPath -ItemType Directory
                 New-Item -Path $mockDscClassResourcesPath -ItemType Directory
 
-                $mockMofResourcePath = Join-Path -Path $mockDscResourcesPath -ChildPath $mockDscResourceName
-                $mockClassResourcePath = Join-Path -Path $mockDscClassResourcesPath -ChildPath $mockDscResourceName
+                $mockMofResourcePath = Join-Path -Path $mockPowerShellModulesPath -ChildPath $mockPowerShellModuleName
+                $mockClassResourcePath = Join-Path -Path $mockDscClassResourcesPath -ChildPath $mockPowerShellModuleName
                 New-Item -Path $mockMofResourcePath -ItemType Directory
                 New-Item -Path $mockClassResourcePath -ItemType Directory
 
-                $filePath = Join-Path -Path $mockMofResourcePath -ChildPath ('{0}.psm1' -f $mockDscResourceName)
+                $filePath = Join-Path -Path $mockMofResourcePath -ChildPath ('{0}.psm1' -f $mockPowerShellModuleName)
                 'test mof resource module file' | Out-File -FilePath $filePath -Encoding ascii
-                $filePath = Join-Path -Path $mockClassResourcePath -ChildPath ('{0}.psm1' -f $mockDscResourceName)
+                $filePath = Join-Path -Path $mockClassResourcePath -ChildPath ('{0}.psm1' -f $mockPowerShellModuleName)
                 'test class resource module file' | Out-File -FilePath $filePath -Encoding ascii
 
                 $testCases = @(
@@ -1163,7 +1163,7 @@ InModuleScope $script:ModuleName {
 
                 $initializeTestEnvironmentParameters = @{
                     DSCModuleName   = $mockDscModuleName
-                    DSCResourceName = $mockDscResourceName
+                    PowerShellModuleName = $mockPowerShellModuleName
                     TestType        = $TestType
                     ResourceType    = $ResourceType
                 }
@@ -1199,7 +1199,7 @@ InModuleScope $script:ModuleName {
             It 'Should throw the correct error' {
                 $initializeTestEnvironmentParameters = @{
                     DSCModuleName   = $mockDscModuleName
-                    DSCResourceName = $mockDscResourceName
+                    PowerShellModuleName = $mockPowerShellModuleName
                     TestType        = 'Unit'
                 }
 
@@ -1306,7 +1306,7 @@ InModuleScope $script:ModuleName {
                 $mockIconUrl = 'https://testicon'
                 $mockPackageDescription = 'Test description'
                 $mockReleaseNotes = 'Test release notes'
-                $mockTags = 'DSCResource Tag'
+                $mockTags = 'PowerShellModule Tag'
             }
 
             It 'Should reset the LCM without throwing' {

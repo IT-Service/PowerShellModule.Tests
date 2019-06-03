@@ -2,7 +2,7 @@ $projectRootPath = Split-Path -Path $PSScriptRoot -Parent
 $testHelperPath = Join-Path -Path $projectRootPath -ChildPath 'TestHelper.psm1'
 Import-Module -Name $testHelperPath -Force
 
-$script:localizedData = Get-LocalizedData -ModuleName 'DscResource.GalleryDeploy' -ModuleRoot $PSScriptRoot
+$script:localizedData = Get-LocalizedData -ModuleName 'PowerShellModule.GalleryDeploy' -ModuleRoot $PSScriptRoot
 
 <#
     .SYNOPSIS

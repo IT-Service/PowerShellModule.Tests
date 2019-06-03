@@ -1,12 +1,12 @@
 <#
 .SYNOPSIS
 
-Get-MofSchemaObject is used to read a .schema.mof file for a DSC resource
+Get-MofSchemaObject is used to read a .schema.mof file for a PowerShell module
 
 .DESCRIPTION
 
 The Get-MofSchemaObject method is used to read the text content of the .schema.mof file
-that all MOF based DSC resources have. The object that is returned contains all of the
+that all MOF based PowerShell modules have. The object that is returned contains all of the
 data in the schema so it can be processed in other scripts.
 
 .PARAMETER FileName

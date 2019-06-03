@@ -1,12 +1,12 @@
-Describe 'DscResource.AnalyzerRules.Helper Unit Tests' {
+Describe 'PowerShellModule.AnalyzerRules.Helper Unit Tests' {
     BeforeAll {
         $projectRootPath = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
-        $moduleRootPath = Join-Path -Path $projectRootPath -ChildPath 'DscResource.AnalyzerRules'
-        $modulePath = Join-Path -Path $moduleRootPath -ChildPath 'DscResource.AnalyzerRules.Helper.psm1'
+        $moduleRootPath = Join-Path -Path $projectRootPath -ChildPath 'PowerShellModule.AnalyzerRules'
+        $modulePath = Join-Path -Path $moduleRootPath -ChildPath 'PowerShellModule.AnalyzerRules.Helper.psm1'
 
         Import-Module -Name $modulePath -Force
     }
-    InModuleScope 'DscResource.AnalyzerRules.Helper' {
+    InModuleScope 'PowerShellModule.AnalyzerRules.Helper' {
         Describe 'Get-StatementBlockAsRows' {
             Context 'When string contains CRLF as new line' {
                 BeforeAll {

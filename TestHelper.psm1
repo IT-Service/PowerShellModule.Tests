@@ -4,20 +4,20 @@
 #>
 
 <#
-    Test if type Microsoft.DscResourceKit.Test is loaded into the session,
+    Test if type Microsoft.PowerShellModuleKit.Test is loaded into the session,
     if not load all the helper types.
 #>
-if (-not ('Microsoft.DscResourceKit.Test' -as [Type]))
+if (-not ('Microsoft.PowerShellModuleKit.Test' -as [Type]))
 {
     <#
         This loads the types:
-            Microsoft.DscResourceKit.Test
-            Microsoft.DscResourceKit.UnitTest
-            Microsoft.DscResourceKit.IntegrationTest
+            Microsoft.PowerShellModuleKit.Test
+            Microsoft.PowerShellModuleKit.UnitTest
+            Microsoft.PowerShellModuleKit.IntegrationTest
 
         Change WarningAction so it does not output a warning for the sealed class.
     #>
-    Add-Type -Path (Join-Path -Path $PSScriptRoot -ChildPath 'Microsoft.DscResourceKit.cs') -WarningAction SilentlyContinue
+    Add-Type -Path (Join-Path -Path $PSScriptRoot -ChildPath 'Microsoft.PowerShellModuleKit.cs') -WarningAction SilentlyContinue
 }
 
 <#
@@ -205,7 +205,7 @@ function Install-ModuleFromPowerShellGallery {
 <#
     .SYNOPSIS
         Initializes an environment for running unit or integration tests
-        on a DSC resource.
+        on a PowerShell module.
 
         This includes:
         1. Updates the $env:PSModulePath to ensure the correct module is tested.
@@ -224,50 +224,50 @@ function Install-ModuleFromPowerShellGallery {
         The name of the DSC Module containing the resource that the tests will be
         run on.
 
-    .PARAMETER DscResourceName
-        The full name of the DSC resource that the tests will be run on. This is
+    .PARAMETER PowerShellModuleName
+        The full name of the PowerShell module that the tests will be run on. This is
         usually the name of the folder containing the actual resource MOF file.
 
     .PARAMETER TestType
         Specifies the type of tests that are being initialized. It can be:
-        Unit: Initialize for running Unit tests on a DSC resource. Default.
-        Integration: Initialize for running Integration tests on a DSC resource.
+        Unit: Initialize for running Unit tests on a PowerShell module. Default.
+        Integration: Initialize for running Integration tests on a PowerShell module.
 
     .PARAMETER ResourceType
-        Specifies if the DscResource under test is mof-based or class-based.
+        Specifies if the PowerShellModule under test is mof-based or class-based.
         The default value is 'mof'.
 
         It can be:
-        Mof: The test initialization assumes a Mof-based DscResource folder structure.
-        Class: The test initialization assumes a Class-based DscResource folder structure.
+        Mof: The test initialization assumes a Mof-based PowerShellModule folder structure.
+        Class: The test initialization assumes a Class-based PowerShellModule folder structure.
 
     .EXAMPLE
         $TestEnvironment = Initialize-TestEnvironment `
             -DSCModuleName 'xNetworking' `
-            -DSCResourceName 'MSFT_xFirewall' `
+            -PowerShellModuleName 'MSFT_xFirewall' `
             -TestType Unit
 
         This command will initialize the test environment for Unit testing
-        the MSFT_xFirewall mof-based DSC resource in the xNetworking DSC module.
+        the MSFT_xFirewall mof-based PowerShell module in the xNetworking DSC module.
 
     .EXAMPLE
         $TestEnvironment = Initialize-TestEnvironment `
             -DSCModuleName 'SqlServerDsc' `
-            -DSCResourceName 'SqlAGDatabase' `
+            -PowerShellModuleName 'SqlAGDatabase' `
             -TestType Unit
             -ResourceType Class
 
         This command will initialize the test environment for Unit testing
-        the SqlAGDatabase class-based DSC resource in the SqlServer DSC module.
+        the SqlAGDatabase class-based PowerShell module in the SqlServer DSC module.
 
     .EXAMPLE
         $TestEnvironment = Initialize-TestEnvironment `
             -DSCModuleName 'xNetworking' `
-            -DSCResourceName 'MSFT_xFirewall' `
+            -PowerShellModuleName 'MSFT_xFirewall' `
             -TestType Integration
 
         This command will initialize the test environment for Integration testing
-        the MSFT_xFirewall DSC resource in the xNetworking DSC module.
+        the MSFT_xFirewall PowerShell module in the xNetworking DSC module.
 #>
 function Initialize-TestEnvironment {
     [OutputType([Hashtable])]
@@ -282,7 +282,7 @@ function Initialize-TestEnvironment {
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [String]
-        $DscResourceName,
+        $PowerShellModuleName,
 
         [Parameter(Mandatory = $true)]
         [ValidateSet('Unit', 'Integration')]
@@ -295,7 +295,7 @@ function Initialize-TestEnvironment {
         $ResourceType = 'Mof'
     )
 
-    Write-Verbose -Message "Initializing test environment for $TestType testing of $DscResourceName in module $DscModuleName"
+    Write-Verbose -Message "Initializing test environment for $TestType testing of $PowerShellModuleName in module $DscModuleName"
 
     $moduleRootFilePath = Split-Path -Path $PSScriptRoot -Parent
     $moduleManifestFilePath = Join-Path -Path $moduleRootFilePath -ChildPath "$DscModuleName.psd1"
@@ -315,7 +315,7 @@ function Initialize-TestEnvironment {
         switch ($ResourceType)
         {
             'Mof' {
-                $resourceTypeFolderName = 'DSCResources'
+                $resourceTypeFolderName = 'PowerShellModules'
             }
 
             'Class' {
@@ -324,9 +324,9 @@ function Initialize-TestEnvironment {
         }
 
         $dscResourcesFolderFilePath = Join-Path -Path $moduleRootFilePath -ChildPath $resourceTypeFolderName
-        $dscResourceToTestFolderFilePath = Join-Path -Path $dscResourcesFolderFilePath -ChildPath $DscResourceName
+        $dscResourceToTestFolderFilePath = Join-Path -Path $dscResourcesFolderFilePath -ChildPath $PowerShellModuleName
 
-        $moduleToImportFilePath = Join-Path -Path $dscResourceToTestFolderFilePath -ChildPath "$DscResourceName.psm1"
+        $moduleToImportFilePath = Join-Path -Path $dscResourceToTestFolderFilePath -ChildPath "$PowerShellModuleName.psm1"
     }
     else 
     {
@@ -391,7 +391,7 @@ function Initialize-TestEnvironment {
     # Return the test environment
     return @{
         DSCModuleName      = $DscModuleName
-        DSCResourceName    = $DscResourceName
+        PowerShellModuleName    = $PowerShellModuleName
         TestType           = $TestType
         ImportedModulePath = $moduleToImportFilePath
         OldPSModulePath    = $oldPSModulePath
@@ -402,7 +402,7 @@ function Initialize-TestEnvironment {
 <#
     .SYNOPSIS
         Restores the environment after running unit or integration tests
-        on a DSC resource.
+        on a PowerShell module.
 
         This restores the following changes made by calling
         Initialize-TestEnvironment:
@@ -426,7 +426,7 @@ function Restore-TestEnvironment {
         $TestEnvironment
     )
 
-    Write-Verbose -Message "Cleaning up Test Environment after $($TestEnvironment.TestType) testing of $($TestEnvironment.DSCResourceName) in module $($TestEnvironment.DSCModuleName)."
+    Write-Verbose -Message "Cleaning up Test Environment after $($TestEnvironment.TestType) testing of $($TestEnvironment.PowerShellModuleName) in module $($TestEnvironment.DSCModuleName)."
 
     if ($TestEnvironment.TestType -ieq 'Integration')
     {
@@ -500,7 +500,7 @@ function Reset-DSC {
         Test-ContainsClassResource -ModulePath 'c:\mymodule\myclassmodule.psm1'
 
         This command will test myclassmodule for the presence of any class-based
-        DSC resources.
+        PowerShell modules.
 #>
 function Test-FileContainsClassResource {
     [OutputType([Boolean])]
@@ -515,7 +515,7 @@ function Test-FileContainsClassResource {
     $fileAst = [System.Management.Automation.Language.Parser]::ParseFile($FilePath, [ref]$null, [ref]$null)
 
     foreach ($fileAttributeAst in $fileAst.FindAll( {$args[0] -is [System.Management.Automation.Language.AttributeAst]}, $false)) {
-        if ($fileAttributeAst.Extent.Text -ieq '[DscResource()]') 
+        if ($fileAttributeAst.Extent.Text -ieq '[PowerShellModule()]') 
         {
             return $true
         }
@@ -554,7 +554,7 @@ function Get-ClassResourceNameFromFile {
 
         $typeDefinitionAsts = $fileAst.FindAll( {$args[0] -is [System.Management.Automation.Language.TypeDefinitionAst]}, $false)
         foreach ($typeDefinitionAst in $typeDefinitionAsts) {
-            if ($typeDefinitionAst.Attributes.TypeName.Name -ieq 'DscResource')
+            if ($typeDefinitionAst.Attributes.TypeName.Name -ieq 'PowerShellModule')
             {
                 $classResourceNames += $typeDefinitionAst.Name
             }
@@ -581,7 +581,7 @@ function Test-ModuleContainsScriptResource {
         $ModulePath
     )
 
-    $dscResourcesFolderFilePath = Join-Path -Path $ModulePath -ChildPath 'DscResources'
+    $dscResourcesFolderFilePath = Join-Path -Path $ModulePath -ChildPath 'PowerShellModules'
     $mofSchemaFiles = Get-ChildItem -Path $dscResourcesFolderFilePath -Filter '*.schema.mof' -File -Recurse
 
     return ($null -ne $mofSchemaFiles)
@@ -728,7 +728,7 @@ function Get-ModuleScriptResourceNames {
 
     $scriptResourceNames = @()
 
-    $dscResourcesFolderFilePath = Join-Path -Path $ModulePath -ChildPath 'DscResources'
+    $dscResourcesFolderFilePath = Join-Path -Path $ModulePath -ChildPath 'PowerShellModules'
     $mofSchemaFiles = Get-ChildItem -Path $dscResourcesFolderFilePath -Filter '*.schema.mof' -File -Recurse
 
     foreach ($mofSchemaFile in $mofSchemaFiles) {
@@ -783,26 +783,26 @@ function Import-PSScriptAnalyzer {
 
 <#
     .SYNOPSIS
-        Imports the xDscResourceDesigner module.
+        Imports the xPowerShellModuleDesigner module.
         Installs the module from the PowerShell Gallery if it is not already installed.
 #>
-function Import-xDscResourceDesigner {
+function Import-xPowerShellModuleDesigner {
     [CmdletBinding()]
     param ()
 
-    $xDscResourceDesignerModule = Get-Module -Name 'xDscResourceDesigner' -ListAvailable
+    $xPowerShellModuleDesignerModule = Get-Module -Name 'xPowerShellModuleDesigner' -ListAvailable
 
-    if ($null -eq $xDscResourceDesignerModule)
+    if ($null -eq $xPowerShellModuleDesignerModule)
     {
-        Write-Verbose -Message 'Installing xDscResourceDesigner from the PowerShell Gallery'
+        Write-Verbose -Message 'Installing xPowerShellModuleDesigner from the PowerShell Gallery'
         $userProfilePSModulePathItem = Get-UserProfilePSModulePathItem
-        $xDscResourceDesignerModulePath = Join-Path -Path $userProfilePSModulePathItem -ChildPath xDscResourceDesigner
-        Install-ModuleFromPowerShellGallery -ModuleName 'xDscResourceDesigner' -DestinationPath $xDscResourceDesignerModulePath
+        $xPowerShellModuleDesignerModulePath = Join-Path -Path $userProfilePSModulePathItem -ChildPath xPowerShellModuleDesigner
+        Install-ModuleFromPowerShellGallery -ModuleName 'xPowerShellModuleDesigner' -DestinationPath $xPowerShellModuleDesignerModulePath
     }
 
-    $xDscResourceDesignerModule = Get-Module -Name 'xDscResourceDesigner' -ListAvailable
+    $xPowerShellModuleDesignerModule = Get-Module -Name 'xPowerShellModuleDesigner' -ListAvailable
 
-    Import-Module -Name $xDscResourceDesignerModule
+    Import-Module -Name $xPowerShellModuleDesignerModule
 }
 
 <#
@@ -842,7 +842,7 @@ function Get-SuppressedPSSARuleNameList {
 <#
     .SYNOPSIS
         Downloads and saves a specific version of NuGet.exe to a local path, to
-        be used to produce DSC Resource NUPKG files.
+        be used to produce PowerShell module NUPKG files.
 
         This allows control over the version of NuGet.exe that is used. This helps
         resolve an issue with different versions of NuGet.exe formatting the version
@@ -1140,7 +1140,7 @@ function Get-RelativePathFromModuleRoot {
 
 <#
     .SYNOPSIS
-        Gets an array of DSC Resource modules imported in a DSC Configuration
+        Gets an array of PowerShell modules imported in a DSC Configuration
         file.
 
     .PARAMETER ConfigurationPath
@@ -1162,27 +1162,27 @@ function Get-ResourceModulesInConfiguration {
     # Get the AST object for the configuration
     $dscConfigurationAST = [System.Management.Automation.Language.Parser]::ParseFile($ConfigurationPath , [ref]$null, [ref]$Null)
 
-    # Get all the Import-DscResource module commands
-    $findAllImportDscResources = {
+    # Get all the Import-PowerShellModule module commands
+    $findAllImportPowerShellModules = {
         $args[0] -is [System.Management.Automation.Language.DynamicKeywordStatementAst] `
-            -and $args[0].CommandElements[0].Value -eq 'Import-DscResource'
+            -and $args[0].CommandElements[0].Value -eq 'Import-PowerShellModule'
     }
 
-    $importDscResourceCmds = $dscConfigurationAST.EndBlock.FindAll( $findAllImportDscResources, $true )
+    $importPowerShellModuleCmds = $dscConfigurationAST.EndBlock.FindAll( $findAllImportPowerShellModules, $true )
 
-    foreach ($importDscResourceCmd in $importDscResourceCmds) {
+    foreach ($importPowerShellModuleCmd in $importPowerShellModuleCmds) {
         $parameterName = 'ModuleName'
         $moduleName = ''
         $moduleVersion = ''
 
-        foreach ($element in $importDscResourceCmd.CommandElements) {
-            # For each element in the Import-DscResource command determine what it means
+        foreach ($element in $importPowerShellModuleCmd.CommandElements) {
+            # For each element in the Import-PowerShellModule command determine what it means
             if ($element -is [System.Management.Automation.Language.CommandParameterAst])
             {
                 $parameterName = $element.ParameterName
             }
             elseif ($element -is [System.Management.Automation.Language.StringConstantExpressionAst] `
-                    -and $element.Value -ne 'Import-DscResource') {
+                    -and $element.Value -ne 'Import-PowerShellModule') {
                 switch ($parameterName) {
                     'ModuleName' {
                         $moduleName = $element.Value
@@ -1333,13 +1333,13 @@ function Install-DependentModule {
 <#
     .SYNOPSIS
         Returns the integration test order number if it exists in the
-        attribute 'Microsoft.DscResourceKit.IntegrationTest' with the
+        attribute 'Microsoft.PowerShellModuleKit.IntegrationTest' with the
         named attribute argument 'OrderNumber'. If it is not found, a
         $null value will be returned.
 
     .PARAMETER Path
         A path to the test file (.Tests.ps1) file to search for the attribute
-        'Microsoft.DscResourceKit.IntegrationTest' with the named
+        'Microsoft.PowerShellModuleKit.IntegrationTest' with the named
         attribute argument 'OrderNumber'.
 #>
 function Get-DscIntegrationTestOrderNumber {
@@ -1354,7 +1354,7 @@ function Get-DscIntegrationTestOrderNumber {
     )
 
     <#
-        Will always return $null if the attribute 'Microsoft.DscResourceKit.IntegrationTest'
+        Will always return $null if the attribute 'Microsoft.PowerShellModuleKit.IntegrationTest'
         is not found with the named attribute argument 'OrderNumber'.
     #>
     $returnValue = $null
@@ -1365,7 +1365,7 @@ function Get-DscIntegrationTestOrderNumber {
         $args[0] -is [System.Management.Automation.Language.AttributeAst] `
             -and (
             $args[0].TypeName.FullName -eq 'IntegrationTest' `
-                -or $args[0].TypeName.FullName -eq 'Microsoft.DscResourceKit.IntegrationTest'
+                -or $args[0].TypeName.FullName -eq 'Microsoft.PowerShellModuleKit.IntegrationTest'
         )
     }
 
@@ -1396,16 +1396,16 @@ function Get-DscIntegrationTestOrderNumber {
     .SYNOPSIS
         Returns the container name and the container image to use for the test
         if found.
-        If the attribute 'Microsoft.DscResourceKit.IntegrationTest' or
-        'Microsoft.DscResourceKit.UnitTest' exists with at least one of the named
+        If the attribute 'Microsoft.PowerShellModuleKit.IntegrationTest' or
+        'Microsoft.PowerShellModuleKit.UnitTest' exists with at least one of the named
         attribute arguments 'ContainerName' or 'ContainerImage' they will be
         returned.
         If neither attribute is not found, a $null value will be returned.
 
     .PARAMETER Path
         A path to the test file (.Tests.ps1) to search for the attribute
-        'Microsoft.DscResourceKit.IntegrationTest' or
-        'Microsoft.DscResourceKit.UnitTest'.
+        'Microsoft.PowerShellModuleKit.IntegrationTest' or
+        'Microsoft.PowerShellModuleKit.UnitTest'.
 
     .OUTPUTS
         Returns a hash table containing container name and the container image
@@ -1435,9 +1435,9 @@ function Get-DscTestContainerInformation {
         $args[0] -is [System.Management.Automation.Language.AttributeAst] `
             -and (
             $args[0].TypeName.FullName -eq 'IntegrationTest' `
-                -or $args[0].TypeName.FullName -eq 'Microsoft.DscResourceKit.IntegrationTest' `
+                -or $args[0].TypeName.FullName -eq 'Microsoft.PowerShellModuleKit.IntegrationTest' `
                 -or $args[0].TypeName.FullName -eq 'UnitTest' `
-                -or $args[0].TypeName.FullName -eq 'Microsoft.DscResourceKit.UnitTest'
+                -or $args[0].TypeName.FullName -eq 'Microsoft.PowerShellModuleKit.UnitTest'
         )
     }
 
@@ -1486,44 +1486,44 @@ function Get-DscTestContainerInformation {
 <#
     .SYNOPSIS
         Returns $true if the current repository being tested is
-        DscResource.Tests, otherwise the value returned will be
+        PowerShellModule.Tests, otherwise the value returned will be
         $false.
 
     .NOTES
         There are two scenarios.
 
-        1. Testing DscResource.Tests; path C:\Projects\DscResource.Tests,
-           or V:\Source\GitHub\DscResource.Tests (or any other path used
+        1. Testing PowerShellModule.Tests; path C:\Projects\PowerShellModule.Tests,
+           or V:\Source\GitHub\PowerShellModule.Tests (or any other path used
            by users).
-        2. Testing a DSC resource module (ie. xStorage); path
-           C:\Projects\xStorage\DscResource.Tests,
-           or V:\Source\GitHub\xStorage\DscResource.Tests (or any other path
+        2. Testing a PowerShell module (ie. xStorage); path
+           C:\Projects\xStorage\PowerShellModule.Tests,
+           or V:\Source\GitHub\xStorage\PowerShellModule.Tests (or any other path
            used by users).
 
         In both these scenarios, when the tests are run, the $PSScriptRoot
         (current folder) is set to one of the above paths, that is
-        $PSScriptRoot (current folder) will always be set to the DscResource.Tests
+        $PSScriptRoot (current folder) will always be set to the PowerShellModule.Tests
         folder.
 
         The following logic will determine if we are running the code on the
-        repository DscResource.Tests or some other resource module.
+        repository PowerShellModule.Tests or some other resource module.
 
         If the parent folder of $PSScriptRoot does NOT contain a module manifest
-        we will assume that DscResource.Test is the module being tested.
+        we will assume that PowerShellModule.Test is the module being tested.
         Example:
-            Current folder:  c:\source\DscResource.Tests
+            Current folder:  c:\source\PowerShellModule.Tests
             Parent folder:   c:\source
             Module manifest: $null
 
         If the parent folder of $PSScriptRoot do contain a module manifest we
-        will assume that DscResource.Test has been cloned into another resource
+        will assume that PowerShellModule.Test has been cloned into another resource
         module and it is that resource module that is being tested.
         Example:
-            Current folder:  c:\source\SqlServerDsc\DscResource.Tests
+            Current folder:  c:\source\SqlServerDsc\PowerShellModule.Tests
             Parent folder:   c:\source\SqlServerDsc
             Module manifest: c:\source\SqlServerDsc\SqlServerDsc.psd1
 #>
-function Test-IsRepositoryDscResourceTests {
+function Test-IsRepositoryPowerShellModuleTests {
     [CmdletBinding()]
     [OutputType([System.Boolean])]
     param
@@ -1621,7 +1621,7 @@ function Write-Info {
     .PARAMETER ModuleName
         The name of the module as it appears before '.strings.psd1' of the localized string file.
         For example:
-            For module: DscResource.Container
+            For module: PowerShellModule.Container
 
     .PARAMETER ModuleRoot
         The module root path where to expect to find the culture folder.
@@ -2006,7 +2006,7 @@ Export-ModuleMember -Function @(
     'Test-FileInUnicode',
     'Get-ModuleScriptResourceNames',
     'Import-PSScriptAnalyzer',
-    'Import-xDscResourceDesigner',
+    'Import-xPowerShellModuleDesigner',
     'Get-SuppressedPSSARuleNameList',
     'Reset-DSC',
     'Install-NugetExe',
@@ -2019,7 +2019,7 @@ Export-ModuleMember -Function @(
     'Get-ResourceModulesInConfiguration',
     'Install-DependentModule',
     'Get-DscIntegrationTestOrderNumber',
-    'Test-IsRepositoryDscResourceTests',
+    'Test-IsRepositoryPowerShellModuleTests',
     'Set-PSModulePath',
     'Write-Info',
     'Get-LocalizedData',
