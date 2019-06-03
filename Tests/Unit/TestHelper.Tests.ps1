@@ -661,63 +661,6 @@ InModuleScope $script:ModuleName {
         }
     }
 
-    Describe 'TestHelper\Get-ModuleScriptResourceNames' {
-        BeforeAll {
-            $resourceName1 = 'TestResource1'
-            $resourceName2 = 'TestResource2'
-            $resourcesPath = Join-Path -Path $TestDrive -ChildPath 'PowerShellModules'
-            $testResourcePath1 = (Join-Path -Path $resourcesPath -ChildPath $resourceName1)
-            $testResourcePath2 = (Join-Path -Path $resourcesPath -ChildPath $resourceName2)
-
-            New-Item -Path $resourcesPath -ItemType Directory
-            New-Item -Path $testResourcePath1 -ItemType Directory
-            New-Item -Path $testResourcePath2 -ItemType Directory
-
-            'resource_schema1' | Out-File -FilePath ('{0}.schema.mof' -f $testResourcePath1) -Encoding ascii
-            'resource_schema2' | Out-File -FilePath ('{0}.schema.mof' -f $testResourcePath2) -Encoding ascii
-        }
-
-        Context 'When a module contains resources' {
-            It 'Should return all the resource names' {
-                $result = Get-ModuleScriptResourceNames -ModulePath $TestDrive
-                $result.Count | Should -Be 2
-                $result[0] | Should -Be $resourceName1
-                $result[1] | Should -Be $resourceName2
-            }
-        }
-    }
-
-    Describe 'TestHelper\Test-ModuleContainsScriptResource' {
-        Context 'When a module contains script resources' {
-            BeforeAll {
-                $resourceName1 = 'TestResource1'
-                $resourceName2 = 'TestResource2'
-                $resourcesPath = Join-Path -Path $TestDrive -ChildPath 'PowerShellModules'
-                $testResourcePath1 = (Join-Path -Path $resourcesPath -ChildPath $resourceName1)
-                $testResourcePath2 = (Join-Path -Path $resourcesPath -ChildPath $resourceName2)
-
-                New-Item -Path $resourcesPath -ItemType Directory
-                New-Item -Path $testResourcePath1 -ItemType Directory
-                New-Item -Path $testResourcePath2 -ItemType Directory
-
-                'resource_schema1' | Out-File -FilePath ('{0}.schema.mof' -f $testResourcePath1) -Encoding ascii
-                'resource_schema2' | Out-File -FilePath ('{0}.schema.mof' -f $testResourcePath2) -Encoding ascii
-            }
-
-            It 'Should return $true' {
-                $result = Test-ModuleContainsScriptResource -ModulePath $TestDrive
-                $result | Should -Be $true
-            }
-        }
-
-        Context 'When a module does not contain a script resource' {
-            It 'Should return $false' {
-                $result = Test-ModuleContainsScriptResource -ModulePath $TestDrive
-                $result | Should -Be $false
-            }
-        }
-    }
-
     Describe 'TestHelper\Test-FileInUnicode' {
         Context 'When a file is unicode' {
             BeforeAll {

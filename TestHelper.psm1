@@ -362,7 +362,7 @@ function Initialize-TestEnvironment
     if ($oldPSModulePathSplit -ccontains $moduleParentFilePath)
     {
         # Remove the existing module path from the new PSModulePath
-        $newPSModulePathSplit = $oldPSModulePathSplit | Where-Object {$_ -ne $moduleParentFilePath}
+        $newPSModulePathSplit = $oldPSModulePathSplit | Where-Object { $_ -ne $moduleParentFilePath }
         $newPSModulePath = $newPSModulePathSplit -join ';'
     }
     else
@@ -522,7 +522,7 @@ function Test-FileContainsClassResource
 
     $fileAst = [System.Management.Automation.Language.Parser]::ParseFile($FilePath, [ref]$null, [ref]$null)
 
-    foreach ($fileAttributeAst in $fileAst.FindAll( {$args[0] -is [System.Management.Automation.Language.AttributeAst]}, $false))
+    foreach ($fileAttributeAst in $fileAst.FindAll( { $args[0] -is [System.Management.Automation.Language.AttributeAst] }, $false))
     {
         if ($fileAttributeAst.Extent.Text -ieq '[PowerShellModule()]')
         {
@@ -562,7 +562,7 @@ function Get-ClassResourceNameFromFile
     {
         $fileAst = [System.Management.Automation.Language.Parser]::ParseFile($FilePath, [ref]$null, [ref]$null)
 
-        $typeDefinitionAsts = $fileAst.FindAll( {$args[0] -is [System.Management.Automation.Language.TypeDefinitionAst]}, $false)
+        $typeDefinitionAsts = $fileAst.FindAll( { $args[0] -is [System.Management.Automation.Language.TypeDefinitionAst] }, $false)
         foreach ($typeDefinitionAst in $typeDefinitionAsts)
         {
             if ($typeDefinitionAst.Attributes.TypeName.Name -ieq 'PowerShellModule')
@@ -729,38 +729,6 @@ function Test-FileInUnicode
 
 <#
     .SYNOPSIS
-        Retrieves the names of all script resources for the given module.
-
-    .PARAMETER ModulePath
-        The path to the module to retrieve the script resource names of.
-#>
-function Get-ModuleScriptResourceNames
-{
-    [OutputType([String[]])]
-    [CmdletBinding()]
-    param
-    (
-        [Parameter(ValueFromPipeline = $true, Mandatory = $true)]
-        [String]
-        $ModulePath
-    )
-
-    $scriptResourceNames = @()
-
-    $dscResourcesFolderFilePath = Join-Path -Path $ModulePath -ChildPath 'PowerShellModules'
-    $mofSchemaFiles = Get-ChildItem -Path $dscResourcesFolderFilePath -Filter '*.schema.mof' -File -Recurse
-
-    foreach ($mofSchemaFile in $mofSchemaFiles)
-    {
-        $scriptResourceName = $mofSchemaFile.BaseName -replace '.schema', ''
-        $scriptResourceNames += $scriptResourceName
-    }
-
-    return $scriptResourceNames
-}
-
-<#
-    .SYNOPSIS
         Imports the PS Script Analyzer module.
         Installs the module from the PowerShell Gallery if it is not already installed.
 #>
@@ -804,31 +772,6 @@ function Import-PSScriptAnalyzer
 
 <#
     .SYNOPSIS
-        Imports the xPowerShellModuleDesigner module.
-        Installs the module from the PowerShell Gallery if it is not already installed.
-#>
-function Import-xPowerShellModuleDesigner
-{
-    [CmdletBinding()]
-    param ()
-
-    $xPowerShellModuleDesignerModule = Get-Module -Name 'xPowerShellModuleDesigner' -ListAvailable
-
-    if ($null -eq $xPowerShellModuleDesignerModule)
-    {
-        Write-Verbose -Message 'Installing xPowerShellModuleDesigner from the PowerShell Gallery'
-        $userProfilePSModulePathItem = Get-UserProfilePSModulePathItem
-        $xPowerShellModuleDesignerModulePath = Join-Path -Path $userProfilePSModulePathItem -ChildPath xPowerShellModuleDesigner
-        Install-ModuleFromPowerShellGallery -ModuleName 'xPowerShellModuleDesigner' -DestinationPath $xPowerShellModuleDesignerModulePath
-    }
-
-    $xPowerShellModuleDesignerModule = Get-Module -Name 'xPowerShellModuleDesigner' -ListAvailable
-
-    Import-Module -Name $xPowerShellModuleDesignerModule
-}
-
-<#
-    .SYNOPSIS
         Retrieves the list of suppressed PSSA rules in the file at the given path.
 
     .PARAMETER FilePath
@@ -850,7 +793,7 @@ function Get-SuppressedPSSARuleNameList
     $fileAst = [System.Management.Automation.Language.Parser]::ParseFile($FilePath, [ref]$null, [ref]$null)
 
     # Overall file attributes
-    $attributeAsts = $fileAst.FindAll( {$args[0] -is [System.Management.Automation.Language.AttributeAst]}, $true)
+    $attributeAsts = $fileAst.FindAll( { $args[0] -is [System.Management.Automation.Language.AttributeAst] }, $true)
 
     foreach ($attributeAst in $attributeAsts)
     {
@@ -1048,8 +991,8 @@ function Get-PSModulePathItem
     )
 
     $item = $env:PSModulePath.Split(';') |
-        Where-Object -FilterScript { $_ -like "$Prefix*" } |
-        Select-Object -First 1
+    Where-Object -FilterScript { $_ -like "$Prefix*" } |
+    Select-Object -First 1
 
     if (-not $item)
     {
@@ -1205,11 +1148,12 @@ function Get-ModulesInScript
     foreach ($importModuleCmd in $importModuleCmds)
     {
         $parameterName = 'Name'
-        $moduleDescription = @{}
+        $moduleDescription = @{ }
 
         foreach ($element in $importModuleCmd.CommandElements)
         {
-            switch ($element) {
+            switch ($element)
+            {
 
                 { $_ -is [System.Management.Automation.Language.CommandParameterAst] }
                 {
@@ -1261,7 +1205,8 @@ function Get-ModulesInScript
                 }
             }
         }
-        if ( $moduleDescription ) {
+        if ( $moduleDescription )
+        {
             $listedModules += $moduleDescription
         }
 
@@ -1313,7 +1258,7 @@ function Install-DependentModule
         {
             $requiredModuleExist = `
                 Get-Module @getModuleParameters |
-                Where-Object -FilterScript {
+            Where-Object -FilterScript {
                 $_.Version -eq $requiredModule.Version
             }
         }
@@ -1817,7 +1762,7 @@ function New-DscSelfSignedCertificate
 
     # Look if there already is an existing certificate.
     $certificate = Get-ChildItem -Path 'cert:\LocalMachine\My' |
-        Where-Object -FilterScript {
+    Where-Object -FilterScript {
         $_.Subject -eq "CN=$certificateSubject"
     } | Select-Object -First 1
 
@@ -2067,9 +2012,7 @@ Export-ModuleMember -Function @(
     'Get-FileParseErrors',
     'Get-TextFilesList',
     'Test-FileInUnicode',
-    'Get-ModuleScriptResourceNames',
     'Import-PSScriptAnalyzer',
-    'Import-xPowerShellModuleDesigner',
     'Get-SuppressedPSSARuleNameList',
     'Reset-DSC',
     'Install-NugetExe',
@@ -2079,7 +2022,7 @@ Export-ModuleMember -Function @(
     'Get-PSHomePSModulePathItem',
     'Test-FileHasByteOrderMark',
     'Get-RelativePathFromModuleRoot',
-    'Get-ResourceModulesInConfiguration',
+    'Get-ModulesInScript',
     'Install-DependentModule',
     'Get-DscIntegrationTestOrderNumber',
     'Test-IsRepositoryPowerShellModuleTests',
