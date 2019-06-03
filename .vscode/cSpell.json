@@ -1,14 +1,28 @@
 {
+    "version": "0.1",
     "ignorePaths": [
-        ".git/*",
-        ".vscode/*"
+        ".git",
+        ".git/**",
+        ".vscode/*",
+        "node_modules",
+        "**/node_modules",
+        "**/node_modules/**",
+        "node_modules/**",
+        "vscode-extension"
     ],
-    "language": "en",
+    "language": "en,ru",
     "dictionaries": [
         "powershell"
     ],
     "words": [
+        "powershellmodule",
+        "betke",
         "markdownlint",
+        "commitlint",
+        "codecov",
+        "Recurse",
+        "PreRelease",
+        "Veyor",
         "Codecov",
         "HQRM",
         "GUIDs",
@@ -20,7 +34,7 @@
         "PSPKI",
         "gitignore",
         "Nuget"
-    ],
+     ],
     "ignoreRegExpList": [
         "AppVeyor",
         "opencode@microsoft.com",
@@ -46,6 +60,7 @@
         "2016-Datacenter-Server-Core",
         "HKLM:\\\\",
         "\\.gitattributes",
+        "\\[.*?\\]\\(.*?\\)",
         "#psscriptanalyzer-rules",
         "#metafixers-module",
         "#testhelper-module",
