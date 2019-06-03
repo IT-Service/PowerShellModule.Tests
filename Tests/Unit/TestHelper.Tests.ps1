@@ -1125,9 +1125,9 @@ InModuleScope $script:ModuleName {
                 New-Item -Path $mockClassResourcePath -ItemType Directory
 
                 $filePath = Join-Path -Path $mockMofResourcePath -ChildPath ('{0}.psm1' -f $mockPowerShellModuleName)
-                'test mof resource module file' | Out-File -FilePath $filePath -Encoding ascii
+                'test mof PowerShell module file' | Out-File -FilePath $filePath -Encoding ascii
                 $filePath = Join-Path -Path $mockClassResourcePath -ChildPath ('{0}.psm1' -f $mockPowerShellModuleName)
-                'test class resource module file' | Out-File -FilePath $filePath -Encoding ascii
+                'test class PowerShell module file' | Out-File -FilePath $filePath -Encoding ascii
 
                 $testCases = @(
                     @{

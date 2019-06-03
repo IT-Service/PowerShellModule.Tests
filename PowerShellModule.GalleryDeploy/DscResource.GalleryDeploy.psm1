@@ -10,7 +10,7 @@ $script:localizedData = Get-LocalizedData -ModuleName 'PowerShellModule.GalleryD
         meet the publishing criteria.
 
     .PARAMETER ResourceModuleName
-        Name of the resource module being deployed.
+        Name of the PowerShell module being deployed.
 
     .PARAMETER Path
         The path to the examples. This path will be recursively search for

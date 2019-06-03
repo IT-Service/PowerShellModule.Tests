@@ -184,7 +184,7 @@
   - Created new unit tests to validate the new Analyzer rules pass or fail as expected for Class based resources
 - Minor code cleanup in AppVeyor.psm1.
 - Updated documentation in README.md and comment-based help in TestHelp.psm1 to
-  use the new name of the renamed SqlServerDsc resource module.
+  use the new name of the renamed SqlServerDsc PowerShell module.
 - Fixed minor typo in manifest for the CodeCoverage module.
 - Added a wrapper Set-PSModulePath for setting $env:PSModulePath to be able to
   write unit tests for the helper functions with more code coverage.
@@ -264,7 +264,7 @@
   - Mock for Resolve-CoverageInfo was removed since it was not used.
   - Moved importing of PowerShellModule.CodeCoverage module to top of AppVeyor.psm1
     for easier mocking.
-- Codecov is once again uploaded for "Harness"-model resource modules
+- Codecov is once again uploaded for "Harness"-model PowerShell modules
   ([issue #229](https://github.com/PowerShell/PowerShellModule.Tests/issues/229)).
 - Changed Example common test
   - Added support for examples to have mandatory parameters.
@@ -343,7 +343,7 @@
   paths which will be searched for PowerShell modules files (.psm1) to be used
   for evaluating code coverage
   ([issue #114](https://github.com/PowerShell/PowerShellModule.Tests/issues/114)).
-- The Modules folder, in the resource module root path, was added as a
+- The Modules folder, in the PowerShell module root path, was added as a
   default path to be searched for PowerShell modules files (.psm1) to be
   used for evaluating code coverage.
 - Added a pull request template as PULL_REQUEST_TEMPLATE.md that will be shown

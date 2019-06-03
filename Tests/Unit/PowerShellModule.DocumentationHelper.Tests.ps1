@@ -747,7 +747,7 @@ Configuration Example
             }
         }
 
-        Context 'When a path to an example file from SharePointDsc resource module and example number 7' {
+        Context 'When a path to an example file from SharePointDsc PowerShell module and example number 7' {
             $script:getPowerShellModuleWikiExampleContent_parameters = @{
                 ExamplePath   = $script:mockExampleFilePath
                 ExampleNumber = 7
@@ -829,7 +829,7 @@ This example shows how to deploy Access Services 2013 to the local SharePoint fa
         }
     }
 
-    Context 'When a path to an example file from CertificateDsc resource module and example number 8' {
+    Context 'When a path to an example file from CertificateDsc PowerShell module and example number 8' {
         $script:getPowerShellModuleWikiExampleContent_parameters = @{
             ExamplePath   = $script:mockExampleFilePath
             ExampleNumber = 8

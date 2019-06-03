@@ -2,7 +2,7 @@
 .SYNOPSIS
 
 New-PowerShellModulePowerShellHelp generates PowerShell compatable help files for a DSC
-resource module
+PowerShell module
 
 .DESCRIPTION
 

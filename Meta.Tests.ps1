@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        Common tests for all resource modules in the PowerShell module Kit.
+        Common tests for all PowerShell modules in the PowerShell module Kit.
 #>
 # Suppressing this because we need to generate a mocked credentials that will be passed along to the examples that are needed in the tests.
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingConvertToSecureStringWithPlainText", "")]
@@ -47,7 +47,7 @@ else
 
 $dscResourcesFolderFilePath = Join-Path -Path $moduleRootFilePath -ChildPath 'PowerShellModules'
 
-# Identify the repository root path of the resource module
+# Identify the repository root path of the PowerShell module
 $repoRootPath = $moduleRootFilePath
 $repoRootPathFound = $false
 while (-not $repoRootPathFound `

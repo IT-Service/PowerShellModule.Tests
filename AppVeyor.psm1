@@ -25,7 +25,7 @@ Import-Module -Name $testHelperPath -Force
         3. Installs the Pester PowerShell Module.
         4. Creates a self-signed certificate for encrypting credentials in configurations.
         5. Executes Invoke-CustomAppveyorInstallTask if defined in .AppVeyor\CustomAppVeyorTasks.psm1
-           in resource module repository.
+           in PowerShell module repository.
 
     .EXAMPLE
         Invoke-AppveyorInstallTask -PesterMaximumVersion 3.4.3
@@ -85,7 +85,7 @@ function Invoke-AppveyorInstallTask
         Executes the tests on a PowerShell module in the AppVeyor build environment.
 
         Executes Start-CustomAppveyorTestTask if defined in .AppVeyor\CustomAppVeyorTasks.psm1
-        in resource module repository.
+        in PowerShell module repository.
 
         Creates a self-signed certificate for encrypting credentials in configurations
         if it doesn't already exist.
@@ -978,7 +978,7 @@ function Invoke-AppveyorTestScriptTask
         5. Upload the Nuget Package to AppVeyor.
 
         Executes Start-CustomAppveyorAfterTestTask if defined in .AppVeyor\CustomAppVeyorTasks.psm1
-        in resource module repository.
+        in PowerShell module repository.
 
     .PARAMETER Type
         This controls the additional processes that can be run after testing.
@@ -1223,7 +1223,7 @@ function Push-TestArtifact
         repository ($env:APPVEYOR_BUILD_FOLDER).
 
     .PARAMETER ResourceModuleName
-        Name of the resource module being deployed.
+        Name of the PowerShell module being deployed.
         If not specified will default to GitHub repository name.
 
     .PARAMETER Branch

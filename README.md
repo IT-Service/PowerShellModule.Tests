@@ -387,12 +387,12 @@ This module provides functions for building and testing PowerShell modules in Ap
 ### Using AppVeyor.psm1 with the default shared model
 
 For an example of a AppVeyor.yml file for using the default shared model with a
-resource module, see the
+PowerShell module, see the
 [PowerShellModule.Template appveyor.yml](https://github.com/PowerShell/PowerShellModules/blob/master/PowerShellModule.Template/appveyor.yml).
 
 ### Using AppVeyor.psm1 with harness model
 
-An example AppVeyor.yml file of using the harness model with a resource module.
+An example AppVeyor.yml file of using the harness model with a PowerShell module.
 
 ```yml
 version: 3.1.{build}.0
@@ -496,15 +496,15 @@ Invoke-AppveyorAfterTestTask `
 
 ## Run integration tests in order
 
-This is only available for resource modules that are using the shared AppVeyor
-module model, meaning those resource modules that are calling the helper function
+This is only available for PowerShell modules that are using the shared AppVeyor
+module model, meaning those PowerShell modules that are calling the helper function
 `Invoke-AppveyorTestScriptTask` either without the parameter `-Type`, or has
 assigned the value `'Default'` to parameter `-Type`.
 
->**Note:** Resource modules using the "Harness"-model (e.g SharePointDsc and
-> xStorage) must add this functionality per individual resource module.
+>**Note:** PowerShell modules using the "Harness"-model (e.g SharePointDsc and
+> xStorage) must add this functionality per individual PowerShell module.
 
-To run integration tests in order, the resource module must opt-in by calling
+To run integration tests in order, the PowerShell module must opt-in by calling
 helper function `Invoke-AppveyorTestScriptTask` using the switch parameter
 `-RunTestInOrder`.
 
@@ -663,10 +663,10 @@ deploy tasks in the appveyor.yml).
     by a dash (e.g. '1-', '2-') to support auto-documentation. The prefix will
     be removed from the name when publishing, so the filename will appear without
     the prefix in PowerShell Gallery.
-- Publish only examples that have a unique GUID within the resource module.
-  *Note: This is only validated within the resource module, the validation
+- Publish only examples that have a unique GUID within the PowerShell module.
+  *Note: This is only validated within the PowerShell module, the validation
   does not validate this against PowerShell Gallery. This is to prevent
-  simple copy/paste mistakes within the same resource module.*
+  simple copy/paste mistakes within the same PowerShell module.*
 - Publish only an example where the configuration name contains only letters,
   numbers, and underscores. Where the name starts with a letter, and ends with a
   letter or a number.
@@ -675,11 +675,11 @@ deploy tasks in the appveyor.yml).
 
 For the Publish-Script to work each repo that opt-in must have the PowerShell
 Gallery account API key as a secure environment variable in appveyor.yml.
-For PowerShell module Kit resource modules, this should be the same API key, since
+For PowerShell module Kit PowerShell modules, this should be the same API key, since
 it must be encrypted by an account that has permission to the AppVeyor PowerShell
 organization account.
 
-> **Note:** This key can only be used for resource modules under PowerShell module Kit.
+> **Note:** This key can only be used for PowerShell modules under PowerShell module Kit.
 
 ```yml
 environment:

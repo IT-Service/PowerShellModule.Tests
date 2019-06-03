@@ -542,7 +542,7 @@ InModuleScope $script:ModuleName {
                     New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'PowerShellModule.Tests\Meta.Tests.ps1') -ItemType File -Force
 
                     <#
-                        Mock some empty resource module files. These files are
+                        Mock some empty PowerShell module files. These files are
                         used by the tested code, to mock coverage.
                     #>
                     New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'MockResource1.psm1') -ItemType File -Force

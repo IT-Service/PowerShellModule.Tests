@@ -373,7 +373,7 @@ function Initialize-TestEnvironment {
     {
         <#
             For integration tests we have to set the machine's PSModulePath because otherwise the
-            DSC LCM won't be able to find the resource module being tested or may use the wrong one.
+            DSC LCM won't be able to find the PowerShell module being tested or may use the wrong one.
         #>
         Set-PSModulePath -Path $newPSModulePath -Machine
 
@@ -1156,7 +1156,7 @@ function Get-ResourceModulesInConfiguration {
         $ConfigurationPath
     )
 
-    # Resource modules
+    # PowerShell modules
     $listedModules = @()
 
     # Get the AST object for the configuration
@@ -1321,7 +1321,7 @@ function Install-DependentModule {
             else 
             {
                 # Warn the user that the test fill fail
-                Write-Warning -Message ("To be able to compile a configuration the resource module $requiredModuleName " + `
+                Write-Warning -Message ("To be able to compile a configuration the PowerShell module $requiredModuleName " + `
                         'is required but it is not installed on this computer. ' + `
                         'The test that is dependent on this module will fail until the required module is installed. ' + `
                         'Please install it from the PowerShell Gallery to enable these tests to pass.')
@@ -1506,7 +1506,7 @@ function Get-DscTestContainerInformation {
         folder.
 
         The following logic will determine if we are running the code on the
-        repository PowerShellModule.Tests or some other resource module.
+        repository PowerShellModule.Tests or some other PowerShell module.
 
         If the parent folder of $PSScriptRoot does NOT contain a module manifest
         we will assume that PowerShellModule.Test is the module being tested.
@@ -1517,7 +1517,7 @@ function Get-DscTestContainerInformation {
 
         If the parent folder of $PSScriptRoot do contain a module manifest we
         will assume that PowerShellModule.Test has been cloned into another resource
-        module and it is that resource module that is being tested.
+        module and it is that PowerShell module that is being tested.
         Example:
             Current folder:  c:\source\SqlServerDsc\PowerShellModule.Tests
             Parent folder:   c:\source\SqlServerDsc
@@ -1683,7 +1683,7 @@ function Get-PublishFileName {
     $filenameWithoutExtension = (Get-Item -Path $Path).BaseName
 
     <#
-        Resource modules using auto-documentation uses a numeric value followed
+        PowerShell modules using auto-documentation uses a numeric value followed
         by a dash ('-') to be able to control the order of the example in
         the documentation. That will not be used when publishing, so remove
         it here from the name that is compared to the configuration name.
@@ -1693,10 +1693,10 @@ function Get-PublishFileName {
 
 <#
     .SYNOPSIS
-        Copies the resource module to the PowerShell module path.
+        Copies the PowerShell module to the PowerShell module path.
 
     .PARAMETER ResourceModuleName
-        Name of the resource module being deployed.
+        Name of the PowerShell module being deployed.
 
     .PARAMETER ModuleRootPath
         The root path to the repository.
