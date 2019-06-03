@@ -1190,80 +1190,82 @@ function Get-ModulesInScript
         $Path
     )
 
-    # PowerShell modules
     $listedModules = @()
 
     $AST = [System.Management.Automation.Language.Parser]::ParseFile($Path , [ref]$null, [ref]$Null)
 
-    # Get all the Import-Module module commands
-    $findAllImportModules = {
-        $args[0] -is [System.Management.Automation.Language.DynamicKeywordStatementAst] `
-            -and $args[0].CommandElements[0].Value -eq 'Import-Module'
-    }
-
-    $importModuleCmds = $AST.EndBlock.FindAll( $findAllImportModules, $true )
+    $importModuleCmds = $AST.EndBlock.FindAll(
+        {
+            $args[0] -is [System.Management.Automation.Language.CommandAst] -and
+            $args[0].CommandElements[0].Value -eq 'Import-Module'
+        },
+        $true
+    )
 
     foreach ($importModuleCmd in $importModuleCmds)
     {
         $parameterName = 'Name'
-        $minimumVersion = ''
+        $moduleDescription = @{}
 
         foreach ($element in $importModuleCmd.CommandElements)
         {
-            # For each element in the Import-Module command determine what it means
-            if ($element -is [System.Management.Automation.Language.CommandParameterAst])
-            {
-                $parameterName = $element.ParameterName
-            }
-            elseif ($element -is [System.Management.Automation.Language.StringConstantExpressionAst] `
-                    -and $element.Value -ne 'Import-Module')
-            {
-                switch ($parameterName)
-                {
-                    'Name'
-                    {
-                        $moduleName = $element.Value
-                    } # ModuleName
+            switch ($element) {
 
-                    'MinimumVersion'
-                    {
-                        $MinimumVersion = $element.Value
-                    } # ModuleVersion
-                } # switch
-            }
-            elseif ($element -is [System.Management.Automation.Language.ArrayLiteralAst])
-            {
-                <#
-                    This is an array of strings (usually something like xNetworking,xWebAdministration)
-                    So we need to add each module to the list
-                #>
-                foreach ($item in $element.Elements)
+                { $_ -is [System.Management.Automation.Language.CommandParameterAst] }
                 {
-                    $listedModules += @{
-                        Name = $item.Value
+                    $parameterName = $element.ParameterName
+                }
+
+                {
+                    ( $_ -is [System.Management.Automation.Language.StringConstantExpressionAst] ) -and
+                    ( $_.value -ne 'Import-Module' )
+                }
+                {
+                    switch ($parameterName)
+                    {
+                        'Name'
+                        {
+                            $moduleDescription.Add( 'Name', $element.Value )
+                        }
+
+                        'MinimumVersion'
+                        {
+                            $moduleDescription.Add( 'MinimumVersion', $element.Value )
+                        }
+                        'MaximumVersion'
+                        {
+                            $moduleDescription.Add( 'MaximumVersion', $element.Value )
+                        }
+                        'RequiredVersion'
+                        {
+                            $moduleDescription.Add( 'RequiredVersion', $element.Value )
+                        }
                     }
-                } # foreach
-            } # if
-        } # foreach
+                }
 
-        # Did a module get identified when stepping through the elements?
-        if (-not [String]::IsNullOrEmpty($moduleName))
-        {
-            if ([String]::IsNullOrEmpty($minimumVersion))
-            {
-                $listedModules += @{
-                    Name = $moduleName
+                { $_ -is [System.Management.Automation.Language.ArrayLiteralAst] }
+                {
+                    switch ($parameterName)
+                    {
+                        'Name'
+                        {
+                            foreach ( $item in $element.Elements )
+                            {
+                                $listedModules += @{
+                                    Name = $item.Value
+                                }
+                            }
+                            $moduleDescription = $null
+                        }
+                    }
                 }
             }
-            else
-            {
-                $listedModules += @{
-                    Name    = $moduleName
-                    Version = $minimumVersion
-                }
-            }
-        } # if
-    } # foreach
+        }
+        if ( $moduleDescription ) {
+            $listedModules += $moduleDescription
+        }
+
+    }
 
     return $listedModules
 }

@@ -385,7 +385,7 @@ InModuleScope $script:ModuleName {
 
                 $result = Get-ModulesInScript -Path $scriptPath
                 $result.Name | Should -Be $moduleName2
-                $result.Version | Should -Be $moduleVersion
+                $result.MinimumVersion | Should -Be $moduleVersion
             }
         }
 
@@ -399,16 +399,16 @@ InModuleScope $script:ModuleName {
                 $result = Get-ModulesInScript -Path $scriptPath
                 $result.Count | Should -Be 2
                 $result[0].Name | Should -Be $moduleName1
-                $result[0].Version | Should -BeNullOrEmpty
+                $result[0].MinimumVersion | Should -BeNullOrEmpty
                 $result[1].Name | Should -Be $moduleName2
-                $result[1].Version | Should -BeNullOrEmpty
+                $result[1].MinimumVersion | Should -BeNullOrEmpty
             }
         }
 
         Context 'When a script file requires two modules which are written in an string array' {
             It 'Should return the correct module name when using an array' {
                 "
-                    Import-Module -ModuleName $arrayModuleName1,$arrayModuleName2
+                    Import-Module -Name $arrayModuleName1,$arrayModuleName2
                 " | Out-File -FilePath $scriptPath -Encoding ascii -Force
 
                 $result = Get-ModulesInScript -Path $scriptPath
