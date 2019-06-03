@@ -1,27 +1,25 @@
-# Module manifest for module 'PowerShellModule.Container'
-
-@{
+﻿@{
 
     # Script module or binary module file associated with this manifest.
-    # RootModule = ''
+    RootModule        = 'PowerShellModule.Container.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.0.0.0'
+    ModuleVersion     = '1.0.0.0'
 
     # ID used to uniquely identify this module
-    GUID = '1f360f42-83c5-4982-8282-294738b0b514'
+    GUID              = '2019418d-0d7e-451e-bf8e-3e332c1b0454'
 
     # Author of this module
-    Author = 'Microsoft Corporation'
+    Author            = 'Sergei S. Betke'
 
     # Company or vendor of this module
-    CompanyName = 'Microsoft Corporation'
+    CompanyName       = 'ФБУ "Тест-С.-Петербург"'
 
     # Copyright statement for this module
-    Copyright = '(c) 2018 Microsoft Corporation. All rights reserved.'
+    Copyright         = '(c) 2019 Sergei S. Betke. All rights reserved.'
 
     # Description of the functionality provided by this module
-    Description = 'This module is used to assist for testing using containers for PowerShell PowerShell modules'
+    Description       = 'This module is used to assist for testing using containers for PowerShell PowerShell modules'
 
     # Minimum version of the Windows PowerShell engine required by this module
     PowerShellVersion = '4.0'
@@ -57,25 +55,25 @@
     # FormatsToProcess = @()
 
     # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-    NestedModules = @(
-            'PowerShellModule.Container.psm1'
-        )
+    NestedModules     = @(
+        'PowerShellModule.Container.psm1'
+    )
 
     # Functions to export from this module
     #FunctionsToExport = '*'
 
     # Cmdlets to export from this module
-    CmdletsToExport = @(
-            'Start-ContainerTest'
-            'Start-Container'
-            'New-Container'
-            'Wait-Container'
-            'Get-ContainerLog'
-            'Copy-ItemFromContainer'
-            'Copy-ItemToContainer'
-            'Out-TestResult'
-            'Out-MissedCommand'
-        )
+    CmdletsToExport   = @(
+        'Start-ContainerTest'
+        'Start-Container'
+        'New-Container'
+        'Wait-Container'
+        'Get-ContainerLog'
+        'Copy-ItemFromContainer'
+        'Copy-ItemToContainer'
+        'Out-TestResult'
+        'Out-MissedCommand'
+    )
 
     # Variables to export from this module
     #VariablesToExport = '*'
@@ -96,18 +94,18 @@
     # DefaultCommandPrefix = ''
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
-    PrivateData = @{
+    PrivateData       = @{
 
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags = @('DesiredStateConfiguration', 'DSC', 'PowerShellModuleKit', 'PowerShellModule')
+            Tags         = @('DesiredStateConfiguration', 'DSC', 'PowerShellModuleKit', 'PowerShellModule')
 
             # A URL to the license for this module.
-            LicenseUri = 'https://github.com/PowerShell/PowerShellModule.Tests/blob/master/LICENSE'
+            LicenseUri   = 'https://github.com/PowerShell/PowerShellModule.Tests/blob/master/LICENSE'
 
             # A URL to the main website for this project.
-            ProjectUri = 'https://github.com/PowerShell/PowerShellModule.Tests'
+            ProjectUri   = 'https://github.com/PowerShell/PowerShellModule.Tests'
 
             # A URL to an icon representing this module.
             # IconUri = ''
