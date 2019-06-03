@@ -1,0 +1,7 @@
+{
+    "extends": "../.markdownlint.json",
+    "first-line-h1": {
+        "level": 4
+    },
+    "blanks-around-headers": false
+}
