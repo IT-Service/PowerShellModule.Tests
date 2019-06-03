@@ -35,7 +35,8 @@ if (-not ('Microsoft.PowerShellModuleKit.Test' -as [Type]))
             -PackageDescription 'Description of the package' `
             -Tags 'tag1 tag2'
 #>
-function New-Nuspec {
+function New-Nuspec
+{
     [CmdletBinding()]
     param
     (
@@ -143,7 +144,8 @@ function New-Nuspec {
     .PARAMETER DestinationPath
         Path where module should be installed
 #>
-function Install-ModuleFromPowerShellGallery {
+function Install-ModuleFromPowerShellGallery
+{
     [CmdletBinding()]
     param
     (
@@ -172,7 +174,7 @@ function Install-ModuleFromPowerShellGallery {
             Invoke-WebRequest -Uri $nugetDownloadURL -OutFile $tempNugetPath
             Write-Verbose -Message "nuget.exe downloaded at $tempNugetPath"
         }
-        else 
+        else
         {
             Write-Verbose -Message "Using Nuget.exe found at $tempNugetPath"
         }
@@ -269,7 +271,8 @@ function Install-ModuleFromPowerShellGallery {
         This command will initialize the test environment for Integration testing
         the MSFT_xFirewall PowerShell module in the xNetworking DSC module.
 #>
-function Initialize-TestEnvironment {
+function Initialize-TestEnvironment
+{
     [OutputType([Hashtable])]
     [CmdletBinding()]
     param
@@ -304,7 +307,7 @@ function Initialize-TestEnvironment {
     {
         Write-Verbose -Message "Module manifest $DscModuleName.psd1 detected at $moduleManifestFilePath"
     }
-    else 
+    else
     {
         throw "Module manifest could not be found for the module $DscModuleName in the root folder $moduleRootFilePath"
     }
@@ -314,11 +317,13 @@ function Initialize-TestEnvironment {
     {
         switch ($ResourceType)
         {
-            'Mof' {
+            'Mof'
+            {
                 $resourceTypeFolderName = 'PowerShellModules'
             }
 
-            'Class' {
+            'Class'
+            {
                 $resourceTypeFolderName = 'DSCClassResources'
             }
         }
@@ -328,7 +333,7 @@ function Initialize-TestEnvironment {
 
         $moduleToImportFilePath = Join-Path -Path $dscResourceToTestFolderFilePath -ChildPath "$PowerShellModuleName.psm1"
     }
-    else 
+    else
     {
         $moduleToImportFilePath = $moduleManifestFilePath
     }
@@ -349,7 +354,7 @@ function Initialize-TestEnvironment {
     {
         $oldPSModulePathSplit = $oldPSModulePath.Split(';')
     }
-    else 
+    else
     {
         $oldPSModulePathSplit = $null
     }
@@ -360,7 +365,7 @@ function Initialize-TestEnvironment {
         $newPSModulePathSplit = $oldPSModulePathSplit | Where-Object {$_ -ne $moduleParentFilePath}
         $newPSModulePath = $newPSModulePathSplit -join ';'
     }
-    else 
+    else
     {
         $newPSModulePath = $oldPSModulePath
     }
@@ -390,12 +395,12 @@ function Initialize-TestEnvironment {
 
     # Return the test environment
     return @{
-        DSCModuleName      = $DscModuleName
-        PowerShellModuleName    = $PowerShellModuleName
-        TestType           = $TestType
-        ImportedModulePath = $moduleToImportFilePath
-        OldPSModulePath    = $oldPSModulePath
-        OldExecutionPolicy = $oldExecutionPolicy
+        DSCModuleName        = $DscModuleName
+        PowerShellModuleName = $PowerShellModuleName
+        TestType             = $TestType
+        ImportedModulePath   = $moduleToImportFilePath
+        OldPSModulePath      = $oldPSModulePath
+        OldExecutionPolicy   = $oldExecutionPolicy
     }
 }
 
@@ -416,7 +421,8 @@ function Initialize-TestEnvironment {
     .EXAMPLE
         Restore-TestEnvironment -TestEnvironment $TestEnvironment
 #>
-function Restore-TestEnvironment {
+function Restore-TestEnvironment
+{
     [CmdletBinding()]
     param
     (
@@ -477,7 +483,8 @@ function Restore-TestEnvironment {
 
         This command will reset the DSC LCM and clear out any DSC configurations.
 #>
-function Reset-DSC {
+function Reset-DSC
+{
     [CmdletBinding()]
     param ()
 
@@ -502,7 +509,8 @@ function Reset-DSC {
         This command will test myclassmodule for the presence of any class-based
         PowerShell modules.
 #>
-function Test-FileContainsClassResource {
+function Test-FileContainsClassResource
+{
     [OutputType([Boolean])]
     [CmdletBinding()]
     param
@@ -514,8 +522,9 @@ function Test-FileContainsClassResource {
 
     $fileAst = [System.Management.Automation.Language.Parser]::ParseFile($FilePath, [ref]$null, [ref]$null)
 
-    foreach ($fileAttributeAst in $fileAst.FindAll( {$args[0] -is [System.Management.Automation.Language.AttributeAst]}, $false)) {
-        if ($fileAttributeAst.Extent.Text -ieq '[PowerShellModule()]') 
+    foreach ($fileAttributeAst in $fileAst.FindAll( {$args[0] -is [System.Management.Automation.Language.AttributeAst]}, $false))
+    {
+        if ($fileAttributeAst.Extent.Text -ieq '[PowerShellModule()]')
         {
             return $true
         }
@@ -536,7 +545,8 @@ function Test-FileContainsClassResource {
 
         This command will get any DSC class resource names from the myclassmodule module.
 #>
-function Get-ClassResourceNameFromFile {
+function Get-ClassResourceNameFromFile
+{
     [OutputType([String[]])]
     [CmdletBinding()]
     param
@@ -553,7 +563,8 @@ function Get-ClassResourceNameFromFile {
         $fileAst = [System.Management.Automation.Language.Parser]::ParseFile($FilePath, [ref]$null, [ref]$null)
 
         $typeDefinitionAsts = $fileAst.FindAll( {$args[0] -is [System.Management.Automation.Language.TypeDefinitionAst]}, $false)
-        foreach ($typeDefinitionAst in $typeDefinitionAsts) {
+        foreach ($typeDefinitionAst in $typeDefinitionAsts)
+        {
             if ($typeDefinitionAst.Attributes.TypeName.Name -ieq 'PowerShellModule')
             {
                 $classResourceNames += $typeDefinitionAst.Name
@@ -571,7 +582,8 @@ function Get-ClassResourceNameFromFile {
     .PARAMETER ModulePath
         The path to the module to test.
 #>
-function Test-ModuleContainsScriptResource {
+function Test-ModuleContainsScriptResource
+{
     [OutputType([Boolean])]
     [CmdletBinding()]
     param
@@ -594,7 +606,8 @@ function Test-ModuleContainsScriptResource {
     .PARAMETER ModulePath
         The path to the module to test.
 #>
-function Test-ModuleContainsClassResource {
+function Test-ModuleContainsClassResource
+{
     [OutputType([Boolean])]
     [CmdletBinding()]
     param
@@ -606,7 +619,8 @@ function Test-ModuleContainsClassResource {
 
     $psm1Files = Get-Psm1FileList -FilePath $ModulePath
 
-    foreach ($psm1File in $psm1Files) {
+    foreach ($psm1File in $psm1Files)
+    {
         if (Test-FileContainsClassResource -FilePath $psm1File.FullName)
         {
             return $true
@@ -623,7 +637,8 @@ function Test-ModuleContainsClassResource {
     .PARAMETER FilePath
         The root file path to gather the .psm1 files from.
 #>
-function Get-Psm1FileList {
+function Get-Psm1FileList
+{
     [OutputType([Object[]])]
     [CmdletBinding()]
     param
@@ -643,7 +658,8 @@ function Get-Psm1FileList {
     .PARAMETER FilePath
         The path to the file to get parse errors for.
 #>
-function Get-FileParseErrors {
+function Get-FileParseErrors
+{
     [OutputType([System.Management.Automation.Language.ParseError[]])]
     [CmdletBinding()]
     param
@@ -670,7 +686,8 @@ function Get-FileParseErrors {
         Retrieves all files with the '.gitignore', '.gitattributes', '.ps1', '.psm1', '.psd1',
         '.json', '.xml', '.cmd', or '.mof' file extensions.
 #>
-function Get-TextFilesList {
+function Get-TextFilesList
+{
     [OutputType([System.IO.FileInfo[]])]
     [CmdletBinding()]
     param
@@ -692,7 +709,8 @@ function Get-TextFilesList {
     .PARAMETER FileInfo
         The file to test.
 #>
-function Test-FileInUnicode {
+function Test-FileInUnicode
+{
     [OutputType([Boolean])]
     [CmdletBinding()]
     param
@@ -716,7 +734,8 @@ function Test-FileInUnicode {
     .PARAMETER ModulePath
         The path to the module to retrieve the script resource names of.
 #>
-function Get-ModuleScriptResourceNames {
+function Get-ModuleScriptResourceNames
+{
     [OutputType([String[]])]
     [CmdletBinding()]
     param
@@ -731,7 +750,8 @@ function Get-ModuleScriptResourceNames {
     $dscResourcesFolderFilePath = Join-Path -Path $ModulePath -ChildPath 'PowerShellModules'
     $mofSchemaFiles = Get-ChildItem -Path $dscResourcesFolderFilePath -Filter '*.schema.mof' -File -Recurse
 
-    foreach ($mofSchemaFile in $mofSchemaFiles) {
+    foreach ($mofSchemaFile in $mofSchemaFiles)
+    {
         $scriptResourceName = $mofSchemaFile.BaseName -replace '.schema', ''
         $scriptResourceNames += $scriptResourceName
     }
@@ -744,7 +764,8 @@ function Get-ModuleScriptResourceNames {
         Imports the PS Script Analyzer module.
         Installs the module from the PowerShell Gallery if it is not already installed.
 #>
-function Import-PSScriptAnalyzer {
+function Import-PSScriptAnalyzer
+{
     [CmdletBinding()]
     param ()
 
@@ -786,7 +807,8 @@ function Import-PSScriptAnalyzer {
         Imports the xPowerShellModuleDesigner module.
         Installs the module from the PowerShell Gallery if it is not already installed.
 #>
-function Import-xPowerShellModuleDesigner {
+function Import-xPowerShellModuleDesigner
+{
     [CmdletBinding()]
     param ()
 
@@ -812,7 +834,8 @@ function Import-xPowerShellModuleDesigner {
     .PARAMETER FilePath
         The path to the file to retrieve the suppressed rules of.
 #>
-function Get-SuppressedPSSARuleNameList {
+function Get-SuppressedPSSARuleNameList
+{
     [OutputType([String[]])]
     [CmdletBinding()]
     param
@@ -829,8 +852,9 @@ function Get-SuppressedPSSARuleNameList {
     # Overall file attributes
     $attributeAsts = $fileAst.FindAll( {$args[0] -is [System.Management.Automation.Language.AttributeAst]}, $true)
 
-    foreach ($attributeAst in $attributeAsts) {
-        if ([System.Diagnostics.CodeAnalysis.SuppressMessageAttribute].FullName.ToLower().Contains($attributeAst.TypeName.FullName.ToLower())) 
+    foreach ($attributeAst in $attributeAsts)
+    {
+        if ([System.Diagnostics.CodeAnalysis.SuppressMessageAttribute].FullName.ToLower().Contains($attributeAst.TypeName.FullName.ToLower()))
         {
             $suppressedPSSARuleNames += $attributeAst.PositionalArguments.Extent.Text
         }
@@ -860,7 +884,8 @@ function Get-SuppressedPSSARuleNameList {
     .PARAMETER RequiredVersion
         The specific version of the NuGet.exe to download.
 #>
-function Install-NugetExe {
+function Install-NugetExe
+{
     [CmdletBinding()]
     param
     (
@@ -892,7 +917,8 @@ function Install-NugetExe {
     .SYNOPSIS
         Gets the current Pester Describe block name
 #>
-function Get-PesterDescribeName {
+function Get-PesterDescribeName
+{
 
     return Get-CommandNameParameterValue -Command 'Describe'
 }
@@ -905,7 +931,8 @@ function Get-PesterDescribeName {
     .PARAMETER OptIns
         An array of what is opted-in
 #>
-function Get-PesterDescribeOptInStatus {
+function Get-PesterDescribeOptInStatus
+{
     param
     (
         [Parameter()]
@@ -942,7 +969,8 @@ of the repo in the following format:
     .PARAMETER Name
         The name of the opt-in option to check the status of.
 #>
-function Get-OptInStatus {
+function Get-OptInStatus
+{
     param
     (
         [Parameter()]
@@ -978,7 +1006,8 @@ of the repo in the following format:
     .PARAMETER Command
         The name of the command to find the Name parameter for.
 #>
-function Get-CommandNameParameterValue {
+function Get-CommandNameParameterValue
+{
     param
     (
         [Parameter(Mandatory = $true)]
@@ -1009,7 +1038,8 @@ function Get-CommandNameParameterValue {
         will return
             C:\Users\foo\Documents\WindowsPowerShell\Modules
 #>
-function Get-PSModulePathItem {
+function Get-PSModulePathItem
+{
     param
     (
         [Parameter(Mandatory = $true, Position = 0)]
@@ -1025,7 +1055,7 @@ function Get-PSModulePathItem {
     {
         Write-Error -Message "Cannot find the requested item in the PowerShell module path.`n`$env:PSModulePath = $env:PSModulePath"
     }
-    else 
+    else
     {
         $item = $item.TrimEnd('\')
     }
@@ -1045,7 +1075,8 @@ function Get-PSModulePathItem {
         will return
             C:\Users\foo\Documents\WindowsPowerShell\Modules
 #>
-function Get-UserProfilePSModulePathItem {
+function Get-UserProfilePSModulePathItem
+{
     param()
 
     return Get-PSModulePathItem -Prefix $env:USERPROFILE
@@ -1063,7 +1094,8 @@ function Get-UserProfilePSModulePathItem {
         will return
             C:\Windows\system32\WindowsPowerShell\v1.0\Modules
 #>
-function Get-PSHomePSModulePathItem {
+function Get-PSHomePSModulePathItem
+{
     param()
 
     return Get-PSModulePathItem -Prefix $global:PSHOME
@@ -1076,7 +1108,8 @@ function Get-PSHomePSModulePathItem {
     .PARAMETER FilePath
         The file path to evaluate.
 #>
-function Test-FileHasByteOrderMark {
+function Test-FileHasByteOrderMark
+{
     param
     (
         [Parameter(Mandatory = $true)]
@@ -1095,7 +1128,7 @@ function Test-FileHasByteOrderMark {
     {
         $getContentParameters['AsByteStream'] = $true
     }
-    else 
+    else
     {
         $getContentParameters['Encoding'] = 'Byte'
     }
@@ -1119,7 +1152,8 @@ function Test-FileHasByteOrderMark {
     .PARAMETER ModuleRootFilePath
         The root path to remove from the file path.
 #>
-function Get-RelativePathFromModuleRoot {
+function Get-RelativePathFromModuleRoot
+{
     param
     (
         [Parameter(Mandatory = $true)]
@@ -1216,7 +1250,7 @@ function Get-ResourceModulesInConfiguration {
                     Name = $moduleName
                 }
             }
-            else 
+            else
             {
                 $listedModules += @{
                     Name    = $moduleName
@@ -1249,7 +1283,8 @@ function Get-ResourceModulesInConfiguration {
             [Version = '3.2.0.0']
         }
 #>
-function Install-DependentModule {
+function Install-DependentModule
+{
     [CmdletBinding()]
     param
     (
@@ -1259,7 +1294,8 @@ function Install-DependentModule {
     )
 
     # Check any additional modules required are installed
-    foreach ($requiredModule in $Module) {
+    foreach ($requiredModule in $Module)
+    {
         $getModuleParameters = @{
             Name          = $requiredModule.Name
             ListAvailable = $true
@@ -1274,7 +1310,7 @@ function Install-DependentModule {
                 $_.Version -eq $requiredModule.Version
             }
         }
-        else 
+        else
         {
             $requiredModuleExist = Get-Module @getModuleParameters
         }
@@ -1286,7 +1322,7 @@ function Install-DependentModule {
             {
                 $requiredModuleName = ('{0} version {1}' -f $requiredModule.Name, $requiredModule.Version)
             }
-            else 
+            else
             {
                 $requiredModuleName = ('{0}' -f $requiredModule.Name)
             }
@@ -1311,14 +1347,16 @@ function Install-DependentModule {
 
                 Write-Info -Message "Installing module $requiredModuleName required to compile a configuration."
 
-                try {
+                try
+                {
                     Install-Module @installModuleParameters -Scope CurrentUser
                 }
-                catch {
+                catch
+                {
                     throw "An error occurred installing the required module $($requiredModuleName) : $_"
                 }
             }
-            else 
+            else
             {
                 # Warn the user that the test fill fail
                 Write-Warning -Message ("To be able to compile a configuration the PowerShell module $requiredModuleName " + `
@@ -1342,7 +1380,8 @@ function Install-DependentModule {
         'Microsoft.PowerShellModuleKit.IntegrationTest' with the named
         attribute argument 'OrderNumber'.
 #>
-function Get-DscIntegrationTestOrderNumber {
+function Get-DscIntegrationTestOrderNumber
+{
     [CmdletBinding()]
     [OutputType([System.UInt32])]
     param
@@ -1416,7 +1455,8 @@ function Get-DscIntegrationTestOrderNumber {
             ContainerImage = [System.String or $null]
         }
 #>
-function Get-DscTestContainerInformation {
+function Get-DscTestContainerInformation
+{
     [CmdletBinding()]
     [OutputType([System.Collections.Hashtable])]
     param
@@ -1454,7 +1494,8 @@ function Get-DscTestContainerInformation {
         [System.Management.Automation.Language.Ast[]] $attributeArgumentAst = `
             $integrationTestAttributeAst.FindAll($findAttributeArgumentFilter, $true)
 
-        foreach ($currentAttributeArgumentAst in $attributeArgumentAst) {
+        foreach ($currentAttributeArgumentAst in $attributeArgumentAst)
+        {
             if ($currentAttributeArgumentAst.ArgumentName -in ('ContainerName', 'ContainerImage'))
             {
                 # Only initiate the hash table if $returnValue is $null.
@@ -1467,12 +1508,15 @@ function Get-DscTestContainerInformation {
                     }
                 }
 
-                switch ($currentAttributeArgumentAst.ArgumentName) {
-                    'ContainerName' {
+                switch ($currentAttributeArgumentAst.ArgumentName)
+                {
+                    'ContainerName'
+                    {
                         $returnValue['ContainerName'] = $currentAttributeArgumentAst.Argument.Value
                     }
 
-                    'ContainerImage' {
+                    'ContainerImage'
+                    {
                         $returnValue['ContainerImage'] = $currentAttributeArgumentAst.Argument.Value
                     }
                 }
@@ -1523,7 +1567,8 @@ function Get-DscTestContainerInformation {
             Parent folder:   c:\source\SqlServerDsc
             Module manifest: c:\source\SqlServerDsc\SqlServerDsc.psd1
 #>
-function Test-IsRepositoryPowerShellModuleTests {
+function Test-IsRepositoryPowerShellModuleTests
+{
     [CmdletBinding()]
     [OutputType([System.Boolean])]
     param
@@ -1537,7 +1582,7 @@ function Test-IsRepositoryPowerShellModuleTests {
     {
         return $true
     }
-    else 
+    else
     {
         return $false
     }
@@ -1562,7 +1607,8 @@ function Test-IsRepositoryPowerShellModuleTests {
     .EXAMPLE
         Set-PSModulePath -Path '<Path 1>;<Path 2>' -Machine
 #>
-function Set-PSModulePath {
+function Set-PSModulePath
+{
     [CmdletBinding()]
     param
     (
@@ -1580,7 +1626,7 @@ function Set-PSModulePath {
     {
         [System.Environment]::SetEnvironmentVariable('PSModulePath', $Path, [System.EnvironmentVariableTarget]::Machine)
     }
-    else 
+    else
     {
         $env:PSModulePath = $Path
     }
@@ -1597,7 +1643,8 @@ function Set-PSModulePath {
         The text color to use when writing the message to the console. Defaults
         to 'Yellow'.
 #>
-function Write-Info {
+function Write-Info
+{
     [CmdletBinding()]
     param
     (
@@ -1626,7 +1673,8 @@ function Write-Info {
     .PARAMETER ModuleRoot
         The module root path where to expect to find the culture folder.
 #>
-function Get-LocalizedData {
+function Get-LocalizedData
+{
     [CmdletBinding()]
     param
     (
@@ -1669,7 +1717,8 @@ function Get-LocalizedData {
         Returns a filename without extension and without any starting numeric
         value followed by a dash (-).
 #>
-function Get-PublishFileName {
+function Get-PublishFileName
+{
     [CmdletBinding()]
     [OutputType([System.String])]
     param
@@ -1704,7 +1753,8 @@ function Get-PublishFileName {
     .OUTPUTS
         Returns the path to where the module was copied (the root of the module).
 #>
-function Copy-ResourceModuleToPSModulePath {
+function Copy-ResourceModuleToPSModulePath
+{
     [CmdletBinding()]
     [OutputType([System.String])]
     param
@@ -1752,7 +1802,8 @@ function Copy-ResourceModuleToPSModulePath {
         certificate will be returned instead of creating a new, and will assume
         that the existing certificate was created with this command.
 #>
-function New-DscSelfSignedCertificate {
+function New-DscSelfSignedCertificate
+{
     $dscPublicCertificatePath = Join-Path -Path $env:temp -ChildPath 'DscPublicKey.cer'
 
     $certificateSubject = 'TestDscEncryptionCert'
@@ -1785,7 +1836,7 @@ function New-DscSelfSignedCertificate {
 
             $certificate = New-SelfSignedCertificate @newSelfSignedCertificateParameters
         }
-        else 
+        else
         {
             <#
                 There are build workers still on Windows Server 2012 R2 so let's
@@ -1813,7 +1864,7 @@ function New-DscSelfSignedCertificate {
 
         Write-Info -Message ('Created self-signed certificate ''{0}'' with thumbprint ''{1}''.' -f $certificate.Subject, $certificate.Thumbprint)
     }
-    else 
+    else
     {
         Write-Info -Message ('Using self-signed certificate ''{0}'' with thumbprint ''{1}''.' -f $certificate.Subject, $certificate.Thumbprint)
     }
@@ -1848,7 +1899,8 @@ function New-DscSelfSignedCertificate {
         If present, the environment variable will be set machine wide.
         If not present, the environment variable will be set for the user.
 #>
-function Set-EnvironmentVariable {
+function Set-EnvironmentVariable
+{
     [CmdletBinding()]
     param
     (
@@ -1871,7 +1923,7 @@ function Set-EnvironmentVariable {
         [Environment]::SetEnvironmentVariable($Name, $Value, 'Machine')
         Set-Item -Path "env:\$Name" -Value $Value
     }
-    else 
+    else
     {
         [Environment]::SetEnvironmentVariable($Name, $Value, 'User')
         Set-Item -Path "env:\$Name" -Value $Value
@@ -1897,7 +1949,8 @@ function Set-EnvironmentVariable {
         test must have CertificateFile pointing to path stored in
         $env:DscPublicCertificatePath.
 #>
-function Initialize-LocalConfigurationManager {
+function Initialize-LocalConfigurationManager
+{
     [CmdletBinding()]
     param
     (
@@ -1966,7 +2019,8 @@ function Initialize-LocalConfigurationManager {
     .PARAMETER RuleType
         Name of the rule type that is being processed
 #>
-function Write-PsScriptAnalyzerWarning {
+function Write-PsScriptAnalyzerWarning
+{
     [CmdletBinding()]
     param
     (
@@ -1982,9 +2036,11 @@ function Write-PsScriptAnalyzerWarning {
     Write-Warning -Message "$RuleType PSSA rule(s) did not pass."
     $ruleCollection = $PssaRuleOutput | Group-Object -Property RuleName
 
-    foreach ($ruleNameGroup in $ruleCollection) {
+    foreach ($ruleNameGroup in $ruleCollection)
+    {
         Write-Warning -Message "The following PSScriptAnalyzer rule '$($ruleNameGroup.Name)' errors need to be fixed:"
-        foreach ($rule in $ruleNameGroup.Group) {
+        foreach ($rule in $ruleNameGroup.Group)
+        {
             Write-Warning -Message "$($rule.ScriptName) (Line $($rule.Line)): $($rule.Message)"
         }
     }
