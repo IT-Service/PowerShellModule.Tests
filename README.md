@@ -1,6 +1,6 @@
-# DscResource.Tests
+# PowerShellModule.Tests
 
-Common meta tests and other shared functions for PowerShell DSC resources repositories.
+Common meta tests and other shared functions for PowerShell modules repositories.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/)
@@ -11,20 +11,19 @@ additional questions or comments.
 
 ### master
 
-[![Build status](https://ci.appveyor.com/api/projects/status/github/PowerShell/DscResource.Tests?branch=master&svg=true)](https://ci.appveyor.com/project/PowerShell/dscresource-tests/branch/master)
-[![codecov](https://codecov.io/gh/PowerShell/DscResource.Tests/branch/master/graph/badge.svg)](https://codecov.io/gh/PowerShell/DscResource.Tests/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/sergey-s-betke/powershellmodule-tests?branch=master&svg=true)](https://ci.appveyor.com/project/sergey-s-betke/powershellmodule-tests/branch/master)
+[![codecov](https://codecov.io/gh/IT-Service/PowerShellModule.Tests/branch/master/graph/badge.svg)](https://codecov.io/gh/IT-Service/PowerShellModule.Tests/branch/master)
 
 This is the branch containing the latest release - no contributions should be made
 directly to this branch.
 
 ### dev
 
-[![Build status](https://ci.appveyor.com/api/projects/status/github/PowerShell/DscResource.Tests?branch=dev&svg=true)](https://ci.appveyor.com/project/PowerShell/dscresource-tests/branch/dev)
-[![codecov](https://codecov.io/gh/PowerShell/DscResource.Tests/branch/dev/graph/badge.svg)](https://codecov.io/gh/PowerShell/DscResource.Tests/branch/dev)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/sergey-s-betke/powershellmodule-tests?branch=dev&svg=true)](https://ci.appveyor.com/project/sergey-s-betke/powershellmodule-tests/branch/dev)
+[![codecov](https://codecov.io/gh/IT-Service/PowerShellModule.Tests/branch/dev/graph/badge.svg)](https://codecov.io/gh/IT-Service/PowerShellModule.Tests/branch/dev)
 
 This is the development branch to which contributions should be proposed by contributors
 as pull requests.
-This branch is used by DSC Resource Kit modules for running common tests.
 
 ## Change Log
 
@@ -213,8 +212,8 @@ variable is `$script:localizedData`, and it is a string constant, e.g.
 > gulpfile.js
 > package.json
 
-The DSC Resource Common Meta Tests contains tests for validating that any
-markdown files in a DSC Resource meet the standard markdown guidelines.
+The Meta Tests contains tests for validating that any
+markdown files in a PowerShell module meet the standard markdown guidelines.
 
 These tests use NPM to download Gulp, which then uses a Gulp file to ensure
 that the markdown files are correct.
@@ -235,34 +234,11 @@ overridden_, and that is lint rule MD013 (line length) and MD024 (Multiple heade
 with the same content). These are disabled by default, and can be enabled by
 individual repositories to enforce those linting rules.
 
-### Example Testing
-
-The DSC Resource Common Meta Tests contains tests for validating that any
-included Example files work correctly.
-These tests are performed by attempting to apply the example DSC Configurations
-to the machine running the tests.
-This causes them to behave as extra integration tests.
-
-The 'example' tests can be excluded when running pester by using:
-
-```PowerShell
-Invoke-Pester -ExcludeTag @('Example')
-```
-
-When a repository is opted-in to example testing, each example file in the 'Examples'
-folder must have a function named Example which should contain the configuration
-which will be tested.
-
-An optional configuration data hash table can be added for any specific data that
-needs to be provided to the example configuration. The configuration data hash table
-variable name must be `$ConfigurationData` for the test to pick it up. If no
-configuration block is provided a default configuration block is used.
-
 ### PSScriptAnalyzer Rules
 
-The DSC Resource Common Meta Tests also contains tests for [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) (PSSA) rules.
+The Common Meta Tests also contains tests for [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer) (PSSA) rules.
 Along with the built-in PSSA rules, custom rules are tested. Those rules are defined and maintained in this repository in
-[DscResource.AnalyzerRules](https://github.com/PowerShell/DscResource.Tests/tree/dev/DscResource.AnalyzerRules). These custom rules are built
+[AnalyzerRules](https://github.com/PowerShell/PowerShellModule.Tests/tree/master/AnalyzerRules). These custom rules are built
 to follow the style guideline, and overriding them should be a temporary measure until the code can follow the style guideline
 
 There will be cases where built-in and/or custom PSSA rules may need to be suppressed in scripts or functions.
@@ -361,20 +337,6 @@ corresponds to a particular test.
 For example, if `Files encoding` test from [Meta.Tests.ps1](Meta.Tests.ps1) test
 fails, you should be able to run `ConvertTo-UTF8` fixer from [MetaFixers.psm1](MetaFixers.psm1).
 
-## TestHelper Module
-
-> TestHelper.psm1
-
-The test helper module (TestHelper.psm1) contains the following functions:
-
-- **New-Nuspec**: Creates a new nuspec file for NuGet package.
-- **Install-ResourceDesigner**: Will attempt to download the
-  xDSCResourceDesignerModule using NuGet package and return the module.
-- **Initialize-TestEnvironment**: Initializes an environment for running unit or
-  integration tests on a DSC resource.
-- **Restore-TestEnvironment**: Restores the environment after running unit or
-  integration tests on a DSC resource.
-
 ## Templates for Creating Tests
 
 The Template files that are used for creating Unit and Integration tests for a
@@ -393,20 +355,6 @@ The resource files are:
 - **[Integration_Config_Template.ps1](https://github.com/PowerShell/DscResources/blob/master/Tests.Template/unit_template.ps1)**:
   Use to create a DSC Configuration file for a single DSC Resource. Used in
   conjunction with Integration_Template.ps1.
-
-## Example Test Usage
-
-To see examples of the Unit/Integration tests in practice, see the xNetworking
-MSFT_xFirewall resource:
-[Unit Tests](https://github.com/PowerShell/xNetworking/blob/dev/Tests/Unit/MSFT_xFirewall.Tests.ps1)
-[Integration Tests](https://github.com/PowerShell/xNetworking/blob/dev/Tests/Integration/MSFT_xFirewall.Integration.Tests.ps1)
-[Resource DSC Configuration](https://github.com/PowerShell/xNetworking/blob/dev/Tests/Integration/MSFT_xFirewall.config.ps1)
-
-## Example Usage of DSCResource.Tests in AppVeyor.yml
-
-To automatically download and install the DscResource.Tests in an AppVeyor.yml
-file, please see the following sample AppVeyor.yml.
-[https://github.com/PowerShell/DscResources/blob/master/DscResource.Template/appveyor.yml](https://github.com/PowerShell/DscResources/blob/master/DscResource.Template/appveyor.yml)
 
 ## AppVeyor Module
 
@@ -434,7 +382,7 @@ This module provides functions for building and testing DSC Resources in AppVeyo
 - **Invoke-AppVeyorDeployTask**: This task is used to perform the following tasks.
   It should be called under the deploy AppVeyor phase (the `deploy_script:`
   keyword in the *appveyor.yml*).
-  - [Publish examples to PowerShell Gallery](#publish-examples-to-powershell-gallery)).
+  - [Publish module to PowerShell Gallery](#publish-module-to-powershell-gallery)).
 
 ### Using AppVeyor.psm1 with the default shared model
 
@@ -475,39 +423,6 @@ deploy_script:
             -Type 'Wiki' `
             -MainModulePath $mainModuleFolder `
             -ResourceModuleName $moduleName
-```
-
-## Encrypt Credentials in Integration Tests
-
-Any configuration used for an integration test that uses a configuration
-that contains credential parameters must be configured to use MOF encryption
-by providing a certificate file.
-
-The path to the certificate file must be provided in the `CertificateFile`
-property in the `ConfigurationData`.
-
-```powershell
-$ConfigurationData = @{
-    AllNodes = @(
-        @{
-            NodeName        = 'localhost'
-            CertificateFile = $env:DscPublicCertificatePath
-        }
-    )
-}
-```
-
-When these tests are run in AppVeyor and the *AppVeyor* module is being used
-then the `Invoke-AppveyorInstallTask` and/or `Invoke-AppveyorTestScriptTask`
-will automatically generate an appropriate certificate file and assign the
-path to the environment variable `$env:DscPublicCertificatePath`.
-
-To run the same tests outside of AppVeyor, the certificate can be created and
-the path assigned to the `$env:DscPublicCertificatePath` variable by running
-the function `New-DscSelfSignedCertificate` from the *TestHelper* module.
-
-```powershell
-$certificate = New-DscSelfSignedCertificate
 ```
 
 ## CodeCoverage reporting with CodeCov.io
@@ -554,8 +469,8 @@ Add the following code below the AppVeyor badge in the main repo `readme.md`,
 replacing `<repoName>` with the name of the repository.
 
 ```markdown
-[![codecov](https://codecov.io/gh/PowerShell/<repoName>/branch/master/graph/badge.svg)](https://codecov.io/gh/PowerShell/<reproName>/branch/master)
-[![codecov](https://codecov.io/gh/PowerShell/<repoName>/branch/dev/graph/badge.svg)](https://codecov.io/gh/PowerShell/<reproName>/branch/dev)
+[![codecov](https://codecov.io/gh/<Owner>/<repoName>/branch/master/graph/badge.svg)](https://codecov.io/gh/<Owner>/<reproName>/branch/master)
+[![codecov](https://codecov.io/gh/<Owner>/<repoName>/branch/dev/graph/badge.svg)](https://codecov.io/gh/<Owner>/<reproName>/branch/dev)
 ```
 
 ## Documentation Helper Module
