@@ -80,7 +80,7 @@ InModuleScope $script:ModuleName {
                         ErrorRecord            = $null
                         ParameterizedSuiteName = $null
                         Describe               = 'MyModule\TestFunction'
-                        Parameters             = [ordered] @{}
+                        Parameters             = [ordered] @{ }
                         Passed                 = $true
                         Show                   = 'All'
                         FailureMessage         = $null
@@ -93,13 +93,13 @@ InModuleScope $script:ModuleName {
                 )
                 FailedCount  = 0
                 CodeCoverage = New-Object -TypeName Object |
-                    Add-Member -MemberType NoteProperty -Name 'NumberOfCommandsAnalyzed' -Value 3 -PassThru |
-                    Add-Member -MemberType NoteProperty -Name 'NumberOfFilesAnalyzed' -Value 2 -PassThru |
-                    Add-Member -MemberType NoteProperty -Name 'NumberOfCommandsExecuted' -Value 1 -PassThru |
-                    Add-Member -MemberType NoteProperty -Name 'NumberOfCommandsMissed' -Value 2 -PassThru |
-                    Add-Member -MemberType NoteProperty -Name 'MissedCommands' -Value $mockMissedCommands -PassThru |
-                    Add-Member -MemberType NoteProperty -Name 'HitCommands' -Value $mockHitCommands -PassThru |
-                    Add-Member -MemberType NoteProperty -Name 'AnalyzedFiles' -Value $mockAnalyzedFiles -PassThru -Force
+                Add-Member -MemberType NoteProperty -Name 'NumberOfCommandsAnalyzed' -Value 3 -PassThru |
+                Add-Member -MemberType NoteProperty -Name 'NumberOfFilesAnalyzed' -Value 2 -PassThru |
+                Add-Member -MemberType NoteProperty -Name 'NumberOfCommandsExecuted' -Value 1 -PassThru |
+                Add-Member -MemberType NoteProperty -Name 'NumberOfCommandsMissed' -Value 2 -PassThru |
+                Add-Member -MemberType NoteProperty -Name 'MissedCommands' -Value $mockMissedCommands -PassThru |
+                Add-Member -MemberType NoteProperty -Name 'HitCommands' -Value $mockHitCommands -PassThru |
+                Add-Member -MemberType NoteProperty -Name 'AnalyzedFiles' -Value $mockAnalyzedFiles -PassThru -Force
             }
         }
 
@@ -335,8 +335,8 @@ InModuleScope $script:ModuleName {
 
                 Assert-MockCalled -CommandName Invoke-Pester -Times 1 -Exactly -Scope It -ParameterFilter {
                     $CodeCoverage -contains "$env:APPVEYOR_BUILD_FOLDER\DSCClassResources\**\*.psm1" `
-                    -and $CodeCoverage -contains "$env:APPVEYOR_BUILD_FOLDER\PowerShellModules\**\*.psm1" `
-                    -and $CodeCoverage -contains "$env:APPVEYOR_BUILD_FOLDER\Modules\**\*.psm1"
+                        -and $CodeCoverage -contains "$env:APPVEYOR_BUILD_FOLDER\PowerShellModules\**\*.psm1" `
+                        -and $CodeCoverage -contains "$env:APPVEYOR_BUILD_FOLDER\Modules\**\*.psm1"
                 }
             } # End It Both PowerShellModules and DSCClassResources
         } # End Context When CodeCoverage requires additional directories
@@ -440,7 +440,7 @@ InModuleScope $script:ModuleName {
                     BeforeAll {
                         New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Integration\MockResource1.config.ps1') -ItemType File -Force
 
-                        Mock -CommandName Get-ResourceModulesInConfiguration -MockWith {
+                        Mock -CommandName Get-ModulesInScript -MockWith {
                             return @{
                                 Name = 'MyModule'
                             }
@@ -454,7 +454,7 @@ InModuleScope $script:ModuleName {
                             Invoke-AppveyorTestScriptTask
                         } | Should -Not -Throw
 
-                        Assert-MockCalled -CommandName Get-ResourceModulesInConfiguration -Exactly -Times 1 -Scope It
+                        Assert-MockCalled -CommandName Get-ModulesInScript -Exactly -Times 1 -Scope It
                         Assert-MockCalled -CommandName Install-DependentModule -Exactly -Times 1 -Scope It
                     }
                 }
@@ -566,7 +566,7 @@ InModuleScope $script:ModuleName {
                     ('
                     [Microsoft.PowerShellModuleKit.UnitTest(ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
                     param()
-                    ' -f $containerName2)| Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Unit\MockResource2.Tests.ps1') -Encoding UTF8 -Force
+                    ' -f $containerName2) | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Unit\MockResource2.Tests.ps1') -Encoding UTF8 -Force
 
                     ('
                     [Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 1, ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
@@ -670,7 +670,7 @@ InModuleScope $script:ModuleName {
                         Mock -CommandName Get-ContainerLog -MockWith {
                             $invalidOperationException = New-Object -TypeName 'InvalidOperationException' -ArgumentList @( $errorMessage )
                             $newObjectParameters = @{
-                                TypeName = 'System.Management.Automation.ErrorRecord'
+                                TypeName     = 'System.Management.Automation.ErrorRecord'
                                 ArgumentList = @(
                                     $invalidOperationException.ToString(),
                                     'MachineStateIncorrect',
@@ -824,7 +824,7 @@ InModuleScope $script:ModuleName {
 
                 Assert-MockCalled -CommandName Install-Module -ParameterFilter {
                     $Name -eq 'Pester' `
-                    -and $PSBoundParameters.ContainsKey('MaximumVersion') -eq $false
+                        -and $PSBoundParameters.ContainsKey('MaximumVersion') -eq $false
                 } -Exactly -Times 1 -Scope It
             }
         }
@@ -849,7 +849,7 @@ InModuleScope $script:ModuleName {
 
                 Assert-MockCalled -CommandName Install-Module -ParameterFilter {
                     $Name -eq 'Pester' `
-                    -and $MaximumVersion -eq [Version] $mockPesterMaximumVersion
+                        -and $MaximumVersion -eq [Version] $mockPesterMaximumVersion
                 } -Exactly -Times 1 -Scope It
             }
         }

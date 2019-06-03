@@ -369,27 +369,6 @@ Describe 'Common Tests - Module Manifest' {
     }
 }
 
-Describe 'Common Tests - Script Resource Schema Validation' {
-    Import-xPowerShellModuleDesigner
-
-    $scriptResourceNames = Get-ModuleScriptResourceNames -ModulePath $moduleRootFilePath
-    foreach ($scriptResourceName in $scriptResourceNames)
-    {
-        Context $scriptResourceName {
-            $scriptResourcePath = Join-Path -Path $dscResourcesFolderFilePath -ChildPath $scriptResourceName
-
-            It 'Should pass Test-xPowerShellModule' {
-                Test-xPowerShellModule -Name $scriptResourcePath | Should -Be $true
-            }
-
-            It 'Should pass Test-xDscSchema' {
-                $mofSchemaFilePath = Join-Path -Path $scriptResourcePath -ChildPath "$scriptResourceName.schema.mof"
-                Test-xDscSchema -Path $mofSchemaFilePath | Should -Be $true
-            }
-        }
-    }
-}
-
 <#
     PSSA = PS Script Analyzer
 

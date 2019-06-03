@@ -223,7 +223,7 @@ function Invoke-AppveyorTestScriptTask
         foreach ($configurationFile in $configurationFiles)
         {
             # Get the list of additional modules required by the example
-            $requiredModules = Get-ResourceModulesInConfiguration -ConfigurationPath $configurationFile.FullName |
+            $requiredModules = Get-ModulesInScript -Path $configurationFile.FullName |
                 Where-Object -Property Name -ne $moduleName
 
             if ($requiredModules)

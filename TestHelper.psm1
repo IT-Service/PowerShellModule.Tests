@@ -1225,7 +1225,7 @@ function Get-ModulesInScript
     .PARAMETER Module
         An array of hash tables containing one or more dependent modules that
         should be installed. The correct array is returned by the helper
-        function Get-ResourceModulesInConfiguration.
+        function Get-ModulesInScript.
 
         Hash table should be in this format. Where property Name is mandatory
         and property Version is optional.
