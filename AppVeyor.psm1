@@ -971,18 +971,17 @@ function Invoke-AppveyorTestScriptTask
         Performs the after tests tasks for the AppVeyor build process.
 
         This includes:
-        1. Optional: Produce and upload Wiki documentation to AppVeyor.
-        2. Set version number in Module Manifest to build version
-        3. Zip up the module content and produce a checksum file and upload to AppVeyor.
-        4. Pack the module into a Nuget Package.
-        5. Upload the Nuget Package to AppVeyor.
+        1. Set version number in Module Manifest to build version
+        2. Zip up the module content and produce a checksum file and upload to AppVeyor.
+        3. Pack the module into a Nuget Package.
+        4. Upload the Nuget Package to AppVeyor.
 
         Executes Start-CustomAppveyorAfterTestTask if defined in .AppVeyor\CustomAppVeyorTasks.psm1
         in PowerShell module repository.
 
     .PARAMETER Type
         This controls the additional processes that can be run after testing.
-        To produce wiki documentation specify 'Wiki', otherwise leave empty to use
+        To produce documentation specify 'Wiki', otherwise leave empty to use
         default value 'Default'.
 
     .PARAMETER MainModulePath

@@ -22,8 +22,7 @@ if (-not ([System.Management.Automation.PSTypeName]'WikiExampleBlockType').Type)
         public documentation for a module.
 
     .DESCRIPTION
-        The New-PowerShellModuleWikiSite cmdlet will review all of the MOF based resources
-        in a specified module directory and will output the Markdown files to the specified directory.
+        The New-PowerShellModuleWikiSite cmdlet will output the Markdown files to the specified directory.
         These help files include details on the property types for each resource, as well as a text
         description and examples where they exist.
 
@@ -53,98 +52,6 @@ function New-PowerShellModuleWikiSite
         $ModulePath
     )
 
-    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath 'MofHelper.psm1')
-
-    $mofSearchPath = Join-Path -Path $ModulePath -ChildPath '\**\*.schema.mof'
-    $mofSchemaFiles = Get-ChildItem -Path $mofSearchPath -Recurse
-
-    # Loop through all the Schema files found in the modules folder
-    foreach ($mofSchemaFile in $mofSchemaFiles)
-    {
-        $mofSchema = Get-MofSchemaObject -FileName $mofSchemaFile.FullName |
-            Where-Object -FilterScript {
-                ($_.ClassName -eq $mofSchemaFile.Name.Replace('.schema.mof', '')) `
-                    -and ($null -ne $_.FriendlyName)
-            }
-
-        $descriptionPath = Join-Path -Path $mofSchemaFile.DirectoryName -ChildPath 'readme.md'
-
-        if (Test-Path -Path $descriptionPath)
-        {
-            Write-Verbose -Message "Generating wiki page for $($mofSchema.FriendlyName)"
-
-            $output = New-Object -TypeName System.Text.StringBuilder
-            $null = $output.AppendLine("# $($mofSchema.FriendlyName)")
-            $null = $output.AppendLine('')
-            $null = $output.AppendLine('## Parameters')
-            $null = $output.AppendLine('')
-            $null = $output.AppendLine('| Parameter | Attribute | DataType | Description | Allowed Values |')
-            $null = $output.AppendLine('| --- | --- | --- | --- | --- |')
-
-            foreach ($property in $mofSchema.Attributes)
-            {
-                # If the attribute is an array, add [] to the DataType string
-                $dataType = $property.DataType
-
-                if ($property.IsArray)
-                {
-                    $dataType += '[]'
-                }
-
-                if ($property.EmbeddedInstance -eq 'MSFT_Credential')
-                {
-                    $dataType = 'PSCredential'
-                }
-
-                $null = $output.Append("| **$($property.Name)** " + `
-                    "| $($property.State) " + `
-                    "| $dataType " + `
-                    "| $($property.Description) |")
-
-                if ([string]::IsNullOrEmpty($property.ValueMap) -ne $true)
-                {
-                    $null = $output.Append(($property.ValueMap -Join ', '))
-                }
-
-                $null = $output.AppendLine('|')
-            }
-
-            $descriptionContent = Get-Content -Path $descriptionPath -Raw
-
-            # Change the description H1 header to an H2
-            $descriptionContent = $descriptionContent -replace '# Description','## Description'
-            $null = $output.AppendLine()
-            $null = $output.AppendLine($descriptionContent)
-
-            $exampleSearchPath = "\Examples\Resources\$($mofSchema.FriendlyName)\*.ps1"
-            $examplesPath = (Join-Path -Path $ModulePath -ChildPath $exampleSearchPath)
-            $exampleFiles = Get-ChildItem -Path $examplesPath -ErrorAction SilentlyContinue
-
-            if ($null -ne $exampleFiles)
-            {
-                $null = $output.AppendLine('## Examples')
-                $exampleCount = 1
-
-                foreach ($exampleFile in $exampleFiles)
-                {
-                    Write-Verbose -Message "Adding Example file '$($exampleFile.Name)' to wiki page for $($mofSchema.FriendlyName)"
-
-                    $exampleContent = Get-PowerShellModuleWikiExampleContent `
-                        -ExamplePath $exampleFile.FullName `
-                        -ExampleNumber ($exampleCount++)
-
-                    $null = $output.AppendLine()
-                    $null = $output.AppendLine($exampleContent)
-                }
-            }
-
-            $null = Out-File `
-                -InputObject $output.ToString() `
-                -FilePath (Join-Path -Path $OutputPath -ChildPath "$($mofSchema.FriendlyName).md") `
-                -Encoding utf8 `
-                -Force
-        }
-    }
 }
 
 <#
@@ -223,14 +130,6 @@ function Get-PowerShellModuleWikiExampleContent
                 }
             }
 
-            'Configuration'
-            {
-                Write-Debug -Message 'Configuration Block Processing'
-
-                # Include all lines in the configuration block in the code output
-                $null = $exampleCodeStringBuilder.AppendLine($exampleLine)
-            }
-
             'ExampleCommentHeader'
             {
                 Write-Debug -Message 'ExampleCommentHeader Block Processing'
@@ -258,7 +157,7 @@ function Get-PowerShellModuleWikiExampleContent
                 Write-Debug -Message 'Not Currently Processing Block'
 
                 # Check the current line
-                if ($exampleLine.TrimStart() -eq  '<#PSScriptInfo')
+                if ($exampleLine.TrimStart() -eq '<#PSScriptInfo')
                 {
                     Write-Debug -Message 'PSScriptInfo Block Started'
 

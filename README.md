@@ -476,7 +476,6 @@ replacing `<repoName>` with the name of the repository.
 ## Documentation Helper Module
 
 > PowerShellModule.DocumentationHelper\PowerShellModule.DocumentationHelper.psd1
-> PowerShellModule.DocumentationHelper\MofHelper.psm1
 > PowerShellModule.DocumentationHelper\PowerShellHelp.psm1
 > PowerShellModule.DocumentationHelper\WikiPages.psm1
 

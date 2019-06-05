@@ -55,7 +55,7 @@
     # FormatsToProcess = @()
 
     # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-    NestedModules   = @("MofHelper.psm1",
+    NestedModules   = @(
         "PowerShellHelp.psm1",
         "WikiPages.psm1")
 
