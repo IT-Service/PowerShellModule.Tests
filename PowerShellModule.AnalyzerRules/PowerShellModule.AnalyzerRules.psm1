@@ -122,10 +122,6 @@ function Measure-ParameterBlockMandatoryNamedArgument
         $script:diagnosticRecord['RuleName'] = $PSCmdlet.MyInvocation.InvocationName
         [System.Boolean] $inAClass = Test-IsInClass -Ast $NamedAttributeArgumentAst
 
-        <#
-            Parameter Attributes are not valid in classes, and DscProperty does
-            not use the (Mandatory = $true) format just DscProperty(Mandatory)
-        #>
         if (!$inAClass)
         {
             if ($NamedAttributeArgumentAst.ArgumentName -eq 'Mandatory')
@@ -282,7 +278,7 @@ function Measure-IfStatement
             and the first rows ends with a correct open brace. See example in
             regression test for #238.
         #>
-        $extentTextWithClauseRemoved = $IfStatementAst.Extent.Text.Replace($IfStatementAst.Clauses[0].Item1.Extent.Text,'')
+        $extentTextWithClauseRemoved = $IfStatementAst.Extent.Text.Replace($IfStatementAst.Clauses[0].Item1.Extent.Text, '')
 
         $testParameters = @{
             StatementBlock = $extentTextWithClauseRemoved
