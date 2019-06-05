@@ -72,8 +72,8 @@ InModuleScope -ModuleName 'WikiPages' {
     $script:expectedExamplePath = Join-Path -Path $script:mockModulePath -ChildPath '\Examples\Resources\MyResource\*.ps1'
     $script:mockExampleFiles = @(
         @{
-            Name      = 'MyResource_Example1_Config.ps1'
-            FullName  = $script:mockExampleFilePath
+            Name     = 'MyResource_Example1_Config.ps1'
+            FullName = $script:mockExampleFilePath
         }
     )
     $script:mockExampleContent = '### Example 1
@@ -253,7 +253,7 @@ Configuration Example
                     -ParameterFilter $script:getTestPathReadme_parameterFilter `
                     -Exactly -Times 1
 
-                 Assert-MockCalled `
+                Assert-MockCalled `
                     -CommandName Get-Content `
                     -ParameterFilter $script:getContentReadme_parameterFilter `
                     -Exactly -Times 1
@@ -380,7 +380,7 @@ Configuration Example
 }
 ```'
 
-                $script:mockGetContentExample = '<#
+            $script:mockGetContentExample = '<#
     .DESCRIPTION
     Example Description.
 #>
@@ -450,7 +450,7 @@ Configuration Example
 }
 ```'
 
-                $script:mockGetContentExample = '<#
+            $script:mockGetContentExample = '<#
     .SYNOPSIS
     Example Description.
 #>
@@ -520,7 +520,7 @@ Configuration Example
 }
 ```'
 
-                $script:mockGetContentExample = '#Requires -module MyModule
+            $script:mockGetContentExample = '#Requires -module MyModule
 #Requires -module OtherModule
 
 <#
@@ -669,20 +669,6 @@ Example Synopsis.
 Example Description.
 
 ```powershell
-Configuration Example
-{
-    Import-PowerShellModule -ModuleName MyModule
-
-    Node localhost
-    {
-        MyResource Something
-        {
-            Id    = ''MyId''
-            Enum  = ''Value1''
-            Int   = 1
-        }
-    }
-}
 ```'
 
             $script:mockGetContentExample = '<#PSScriptInfo
@@ -692,14 +678,14 @@ Configuration Example
 .COMPANYNAME Microsoft Corporation
 .COPYRIGHT
 .TAGS DSCConfiguration
-.LICENSEURI https://github.com/PowerShell/CertificateDsc/blob/master/LICENSE
-.PROJECTURI https://github.com/PowerShell/CertificateDsc
+.LICENSEURI https://github.com/PowerShell/MyModule/blob/master/LICENSE
+.PROJECTURI https://github.com/PowerShell/MyModule
 .ICONURI
 .EXTERNALMODULEDEPENDENCIES
 .REQUIREDSCRIPTS
 .EXTERNALSCRIPTDEPENDENCIES
 .RELEASENOTES First version.
-.PRIVATEDATA 2016-Datacenter,2016-Datacenter-Server-Core
+.PRIVATEDATA tags
 #>
 
 <#
@@ -709,20 +695,7 @@ Configuration Example
     .DESCRIPTION
         Example Description.
 #>
-Configuration Example
-{
-    Import-PowerShellModule -ModuleName MyModule
-
-    Node localhost
-    {
-        MyResource Something
-        {
-            Id    = ''MyId''
-            Enum  = ''Value1''
-            Int   = 1
-        }
-    }
-}' -split "`r`n"
+' -split "`r`n"
 
             BeforeAll {
                 Mock `
@@ -735,6 +708,7 @@ Configuration Example
                 { $script:result = Get-PowerShellModuleWikiExampleContent @script:getPowerShellModuleWikiExampleContent_parameters } | Should -Not -Throw
             }
 
+            <#
             It 'Should return the expected string' {
                 $script:result | Should -Be $script:mockExampleContent
             }
@@ -745,176 +719,7 @@ Configuration Example
                     -ParameterFilter $script:getContentExample_parameterFilter `
                     -Exactly -Times 1
             }
-        }
-
-        Context 'When a path to an example file from SharePointDsc PowerShell module and example number 7' {
-            $script:getPowerShellModuleWikiExampleContent_parameters = @{
-                ExamplePath   = $script:mockExampleFilePath
-                ExampleNumber = 7
-                Verbose       = $true
-            }
-
-            $script:mockExampleContent = '### Example 7
-
-This example shows how to deploy Access Services 2013 to the local SharePoint farm.
-
-```powershell
-    Configuration Example
-    {
-        param(
-            [Parameter(Mandatory = $true)]
-            [PSCredential]
-            $SetupAccount
-        )
-        Import-PowerShellModule -ModuleName SharePointDsc
-
-        node localhost {
-            SPAccessServiceApp AccessServices
-            {
-                Name                 = "Access Services Service Application"
-                ApplicationPool      = "SharePoint Service Applications"
-                DatabaseServer       = "SQL.contoso.local\SQLINSTANCE"
-                PsDscRunAsCredential = $SetupAccount
-            }
-        }
-    }
-```'
-
-            $script:mockGetContentExample = '<#
-.EXAMPLE
-    This example shows how to deploy Access Services 2013 to the local SharePoint farm.
-#>
-
-    Configuration Example
-    {
-        param(
-            [Parameter(Mandatory = $true)]
-            [PSCredential]
-            $SetupAccount
-        )
-        Import-PowerShellModule -ModuleName SharePointDsc
-
-        node localhost {
-            SPAccessServiceApp AccessServices
-            {
-                Name                 = "Access Services Service Application"
-                ApplicationPool      = "SharePoint Service Applications"
-                DatabaseServer       = "SQL.contoso.local\SQLINSTANCE"
-                PsDscRunAsCredential = $SetupAccount
-            }
-        }
-    }' -split "`r`n"
-
-            BeforeAll {
-                Mock `
-                    -CommandName Get-Content `
-                    -ParameterFilter $script:getContentExample_parameterFilter `
-                    -MockWith { $script:mockGetContentExample }
-            }
-
-            It 'Should not throw an exception' {
-                { $script:result = Get-PowerShellModuleWikiExampleContent @script:getPowerShellModuleWikiExampleContent_parameters } | Should -Not -Throw
-            }
-
-            It 'Should return the expected string' {
-                $script:result | Should -Be $script:mockExampleContent
-            }
-
-            It 'Should call the expected mocks ' {
-                Assert-MockCalled `
-                    -CommandName Get-Content `
-                    -ParameterFilter $script:getContentExample_parameterFilter `
-                    -Exactly -Times 1
-            }
-        }
-    }
-
-    Context 'When a path to an example file from CertificateDsc PowerShell module and example number 8' {
-        $script:getPowerShellModuleWikiExampleContent_parameters = @{
-            ExamplePath   = $script:mockExampleFilePath
-            ExampleNumber = 8
-            Verbose       = $true
-        }
-
-        $script:mockExampleContent = '### Example 8
-
-Exports a certificate as a CERT using the friendly name to identify it.
-
-```powershell
-Configuration CertificateExport_CertByFriendlyName_Config
-{
-    Import-PowerShellModule -ModuleName CertificateDsc
-
-    Node localhost
-    {
-        CertificateExport SSLCert
-        {
-            Type         = ''CERT''
-            FriendlyName = ''Web Site SSL Certificate for www.contoso.com''
-            Path         = ''c:\sslcert.cer''
-        }
-    }
-}
-```'
-
-        $script:mockGetContentExample = '<#PSScriptInfo
-.VERSION 1.0.0
-.GUID 14b1346a-436a-4f64-af5c-b85119b819b3
-.AUTHOR Microsoft Corporation
-.COMPANYNAME Microsoft Corporation
-.COPYRIGHT
-.TAGS DSCConfiguration
-.LICENSEURI https://github.com/PowerShell/CertificateDsc/blob/master/LICENSE
-.PROJECTURI https://github.com/PowerShell/CertificateDsc
-.ICONURI
-.EXTERNALMODULEDEPENDENCIES
-.REQUIREDSCRIPTS
-.EXTERNALSCRIPTDEPENDENCIES
-.RELEASENOTES First version.
-.PRIVATEDATA 2016-Datacenter,2016-Datacenter-Server-Core
-#>
-
-#Requires -module CertificateDsc
-
-<#
-    .DESCRIPTION
-        Exports a certificate as a CERT using the friendly name to identify it.
-#>
-Configuration CertificateExport_CertByFriendlyName_Config
-{
-    Import-PowerShellModule -ModuleName CertificateDsc
-
-    Node localhost
-    {
-        CertificateExport SSLCert
-        {
-            Type         = ''CERT''
-            FriendlyName = ''Web Site SSL Certificate for www.contoso.com''
-            Path         = ''c:\sslcert.cer''
-        }
-    }
-}' -split "`r`n"
-
-        BeforeAll {
-            Mock `
-                -CommandName Get-Content `
-                -ParameterFilter $script:getContentExample_parameterFilter `
-                -MockWith { $script:mockGetContentExample }
-        }
-
-        It 'Should not throw an exception' {
-            { $script:result = Get-PowerShellModuleWikiExampleContent @script:getPowerShellModuleWikiExampleContent_parameters } | Should -Not -Throw
-        }
-
-        It 'Should return the expected string' {
-            $script:result | Should -Be $script:mockExampleContent
-        }
-
-        It 'Should call the expected mocks ' {
-            Assert-MockCalled `
-                -CommandName Get-Content `
-                -ParameterFilter $script:getContentExample_parameterFilter `
-                -Exactly -Times 1
+            #>
         }
     }
 }
