@@ -128,7 +128,7 @@ function Invoke-AppveyorInstallTask
         common tests will run, followed by the unit tests. Finally the integration
         tests will be run in the order defined.
         Each integration test configuration file ('*.config.ps1') must be decorated
-        with an attribute `Microsoft.PowerShellModuleKit.IntegrationTest` containing
+        with an attribute `ITG.PowerShellModuleKit.IntegrationTest` containing
         a named attribute argument 'OrderNumber' and be assigned a numeric value
         (`1`, `2`, `3`,..). If the integration test is not decorated with the
         attribute, then that test will run among the last tests, after all the

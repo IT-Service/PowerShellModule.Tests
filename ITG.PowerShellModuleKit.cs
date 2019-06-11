@@ -7,16 +7,16 @@
 // The following are examples of how to write the decoration in a .Tests.ps1 file.
 //
 // # Integration test using container and specific order.
-// [Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 1, ContainerName = 'ContainerName', ContainerImage = 'Organization/ImageName:Tag')]
+// [ITG.PowerShellModuleKit.IntegrationTest(OrderNumber = 1, ContainerName = 'ContainerName', ContainerImage = 'Organization/ImageName:Tag')]
 // param()
 //
 // # Unit test using container.
-// [Microsoft.PowerShellModuleKit.UnitTest(ContainerName = 'ContainerName', ContainerImage = 'Organization/ImageName:Tag')]
+// [ITG.PowerShellModuleKit.UnitTest(ContainerName = 'ContainerName', ContainerImage = 'Organization/ImageName:Tag')]
 // param()
 
 using System;
 
-namespace Microsoft.PowerShellModuleKit
+namespace ITG.PowerShellModuleKit
 {
     // See the attribute guidelines at http://go.microsoft.com/fwlink/?LinkId=85236
     [System.AttributeUsage(System.AttributeTargets.All, Inherited = false, AllowMultiple = true)]

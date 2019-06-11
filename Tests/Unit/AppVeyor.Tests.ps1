@@ -507,12 +507,12 @@ InModuleScope $script:ModuleName {
             Context 'When called with parameters RunTestInOrder' {
                 BeforeAll {
                     '
-                    [Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 1)]
+                    [ITG.PowerShellModuleKit.IntegrationTest(OrderNumber = 1)]
                     param()
                     ' | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Integration\MockResource1.Integration.Tests.ps1') -Encoding UTF8 -Force
 
                     '
-                    [Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 2)]
+                    [ITG.PowerShellModuleKit.IntegrationTest(OrderNumber = 2)]
                     param()
                     ' | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Integration\MockResource2.Integration.Tests.ps1') -Encoding UTF8 -Force
                 }
@@ -559,22 +559,22 @@ InModuleScope $script:ModuleName {
                     $containerIdentifier2 = 2222
 
                     ('
-                    [Microsoft.PowerShellModuleKit.UnitTest(ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
+                    [ITG.PowerShellModuleKit.UnitTest(ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
                     param()
                     ' -f $containerName1) | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Unit\MockResource1.Tests.ps1') -Encoding UTF8 -Force
 
                     ('
-                    [Microsoft.PowerShellModuleKit.UnitTest(ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
+                    [ITG.PowerShellModuleKit.UnitTest(ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
                     param()
                     ' -f $containerName2) | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Unit\MockResource2.Tests.ps1') -Encoding UTF8 -Force
 
                     ('
-                    [Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 1, ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
+                    [ITG.PowerShellModuleKit.IntegrationTest(OrderNumber = 1, ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
                     param()
                     ' -f $containerName1) | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Integration\MockResource1.Integration.Tests.ps1') -Encoding UTF8 -Force
 
                     ('
-                    [Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 2, ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
+                    [ITG.PowerShellModuleKit.IntegrationTest(OrderNumber = 2, ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
                     param()
                     ' -f $containerName2) | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Integration\MockResource2.Integration.Tests.ps1') -Encoding UTF8 -Force
 

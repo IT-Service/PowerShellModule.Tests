@@ -508,7 +508,7 @@ helper function `Invoke-AppveyorTestScriptTask` using the switch parameter
 `-RunTestInOrder`.
 
 Also, each integration test file ('*.Integration.Tests.ps1') must be decorated
-with an attribute `Microsoft.PowerShellModuleKit.IntegrationTest` containing a named
+with an attribute `ITG.PowerShellModuleKit.IntegrationTest` containing a named
 attribute argument 'OrderNumber' and be assigned a numeric value
 (`1`, `2`, `3`,..).
 The value `0` should not be used since it is reserved for PowerShellModule.Tests,
@@ -524,7 +524,7 @@ integration test is always run as one of the first integration tests.
 This should be put a the top of the integration test script file.
 
 ```powershell
-[Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 1)]
+[ITG.PowerShellModuleKit.IntegrationTest(OrderNumber = 1)]
 param()
 ```
 
@@ -536,7 +536,7 @@ in parallel on the same build worker.
 The common tests will by default always be run on the AppVeyor build worker.
 
 To run a test in a container, the test must be decorated with the attribute
-`Microsoft.PowerShellModuleKit.IntegrationTest` or `Microsoft.PowerShellModuleKit.UnitTest`.
+`ITG.PowerShellModuleKit.IntegrationTest` or `ITG.PowerShellModuleKit.UnitTest`.
 
 The Pester output from the container, including errors will be sent to
 the console in a Pester like format, and they will also be added to the
@@ -575,7 +575,7 @@ be run in a container and also run before other integration tests.
 This should be put a the top of the integration test script file.
 
 ```powershell
-[Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 1, ContainerName = 'ContainerName', ContainerImage = 'Organization/ImageName:Tag')]
+[ITG.PowerShellModuleKit.IntegrationTest(OrderNumber = 1, ContainerName = 'ContainerName', ContainerImage = 'Organization/ImageName:Tag')]
 param()
 ```
 
@@ -584,7 +584,7 @@ be run in a container and not using any specific order.
 This should be put a the top of the integration test script file.
 
 ```powershell
-[Microsoft.PowerShellModuleKit.IntegrationTest(ContainerName = 'ContainerName', ContainerImage = 'Organization/ImageName:Tag')]
+[ITG.PowerShellModuleKit.IntegrationTest(ContainerName = 'ContainerName', ContainerImage = 'Organization/ImageName:Tag')]
 param()
 ```
 
@@ -593,7 +593,7 @@ be run in a container. This should be put a the top of the unit test script file
 ***Note:** Unit test does not support ordered testing at this time.*
 
 ```powershell
-[Microsoft.PowerShellModuleKit.UnitTest(ContainerName = 'ContainerName', ContainerImage = 'Organization/ImageName:Tag')]
+[ITG.PowerShellModuleKit.UnitTest(ContainerName = 'ContainerName', ContainerImage = 'Organization/ImageName:Tag')]
 param()
 ```
 

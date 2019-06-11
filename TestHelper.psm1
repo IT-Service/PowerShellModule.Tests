@@ -4,20 +4,20 @@
 #>
 
 <#
-    Test if type Microsoft.PowerShellModuleKit.Test is loaded into the session,
+    Test if type ITG.PowerShellModuleKit.Test is loaded into the session,
     if not load all the helper types.
 #>
-if (-not ('Microsoft.PowerShellModuleKit.Test' -as [Type]))
+if (-not ('ITG.PowerShellModuleKit.Test' -as [Type]))
 {
     <#
         This loads the types:
-            Microsoft.PowerShellModuleKit.Test
-            Microsoft.PowerShellModuleKit.UnitTest
-            Microsoft.PowerShellModuleKit.IntegrationTest
+            ITG.PowerShellModuleKit.Test
+            ITG.PowerShellModuleKit.UnitTest
+            ITG.PowerShellModuleKit.IntegrationTest
 
         Change WarningAction so it does not output a warning for the sealed class.
     #>
-    Add-Type -Path (Join-Path -Path $PSScriptRoot -ChildPath 'Microsoft.PowerShellModuleKit.cs') -WarningAction SilentlyContinue
+    Add-Type -Path (Join-Path -Path $PSScriptRoot -ChildPath 'ITG.PowerShellModuleKit.cs') -WarningAction SilentlyContinue
 }
 
 <#
@@ -1323,13 +1323,13 @@ function Install-DependentModule
 <#
     .SYNOPSIS
         Returns the integration test order number if it exists in the
-        attribute 'Microsoft.PowerShellModuleKit.IntegrationTest' with the
+        attribute 'ITG.PowerShellModuleKit.IntegrationTest' with the
         named attribute argument 'OrderNumber'. If it is not found, a
         $null value will be returned.
 
     .PARAMETER Path
         A path to the test file (.Tests.ps1) file to search for the attribute
-        'Microsoft.PowerShellModuleKit.IntegrationTest' with the named
+        'ITG.PowerShellModuleKit.IntegrationTest' with the named
         attribute argument 'OrderNumber'.
 #>
 function Get-DscIntegrationTestOrderNumber
@@ -1345,7 +1345,7 @@ function Get-DscIntegrationTestOrderNumber
     )
 
     <#
-        Will always return $null if the attribute 'Microsoft.PowerShellModuleKit.IntegrationTest'
+        Will always return $null if the attribute 'ITG.PowerShellModuleKit.IntegrationTest'
         is not found with the named attribute argument 'OrderNumber'.
     #>
     $returnValue = $null
@@ -1356,7 +1356,7 @@ function Get-DscIntegrationTestOrderNumber
         $args[0] -is [System.Management.Automation.Language.AttributeAst] `
             -and (
             $args[0].TypeName.FullName -eq 'IntegrationTest' `
-                -or $args[0].TypeName.FullName -eq 'Microsoft.PowerShellModuleKit.IntegrationTest'
+                -or $args[0].TypeName.FullName -eq 'ITG.PowerShellModuleKit.IntegrationTest'
         )
     }
 
@@ -1387,16 +1387,16 @@ function Get-DscIntegrationTestOrderNumber
     .SYNOPSIS
         Returns the container name and the container image to use for the test
         if found.
-        If the attribute 'Microsoft.PowerShellModuleKit.IntegrationTest' or
-        'Microsoft.PowerShellModuleKit.UnitTest' exists with at least one of the named
+        If the attribute 'ITG.PowerShellModuleKit.IntegrationTest' or
+        'ITG.PowerShellModuleKit.UnitTest' exists with at least one of the named
         attribute arguments 'ContainerName' or 'ContainerImage' they will be
         returned.
         If neither attribute is not found, a $null value will be returned.
 
     .PARAMETER Path
         A path to the test file (.Tests.ps1) to search for the attribute
-        'Microsoft.PowerShellModuleKit.IntegrationTest' or
-        'Microsoft.PowerShellModuleKit.UnitTest'.
+        'ITG.PowerShellModuleKit.IntegrationTest' or
+        'ITG.PowerShellModuleKit.UnitTest'.
 
     .OUTPUTS
         Returns a hash table containing container name and the container image
@@ -1427,9 +1427,9 @@ function Get-DscTestContainerInformation
         $args[0] -is [System.Management.Automation.Language.AttributeAst] `
             -and (
             $args[0].TypeName.FullName -eq 'IntegrationTest' `
-                -or $args[0].TypeName.FullName -eq 'Microsoft.PowerShellModuleKit.IntegrationTest' `
+                -or $args[0].TypeName.FullName -eq 'ITG.PowerShellModuleKit.IntegrationTest' `
                 -or $args[0].TypeName.FullName -eq 'UnitTest' `
-                -or $args[0].TypeName.FullName -eq 'Microsoft.PowerShellModuleKit.UnitTest'
+                -or $args[0].TypeName.FullName -eq 'ITG.PowerShellModuleKit.UnitTest'
         )
     }
 

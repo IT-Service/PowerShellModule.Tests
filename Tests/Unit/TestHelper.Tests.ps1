@@ -17,17 +17,17 @@ InModuleScope $script:ModuleName {
             ' | Out-File -FilePath $filePath_NoAttribute
 
             '
-            [Microsoft.PowerShellModuleKit.IntegrationTest(UnknownParameter = 2)]
+            [ITG.PowerShellModuleKit.IntegrationTest(UnknownParameter = 2)]
             param()
             ' | Out-File -FilePath $filePath_WrongAttribute
 
             '
-            [Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 2)]
+            [ITG.PowerShellModuleKit.IntegrationTest(OrderNumber = 2)]
             param()
             ' | Out-File -FilePath $filePath_CorrectAttribute
 
             '
-            [Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 2, UnknownParameter = ''Test'')]
+            [ITG.PowerShellModuleKit.IntegrationTest(OrderNumber = 2, UnknownParameter = ''Test'')]
             param()
             ' | Out-File -FilePath $filePath_CorrectAttributeWithExtraNamedArgument
 
@@ -82,22 +82,22 @@ InModuleScope $script:ModuleName {
                 ' | Out-File -FilePath $filePath_NoAttribute
 
                 '
-                [Microsoft.PowerShellModuleKit.IntegrationTest(UnknownParameter = 2)]
+                [ITG.PowerShellModuleKit.IntegrationTest(UnknownParameter = 2)]
                 param()
                 ' | Out-File -FilePath $filePath_WrongAttribute
 
                 ('
-                [Microsoft.PowerShellModuleKit.IntegrationTest(ContainerName = ''{0}'')]
+                [ITG.PowerShellModuleKit.IntegrationTest(ContainerName = ''{0}'')]
                 param()
                 ' -f $mockContainerName) | Out-File -FilePath $filePath_CorrectAttributeOnlyContainerName
 
                 ('
-                [Microsoft.PowerShellModuleKit.IntegrationTest(ContainerName = ''{0}'', ContainerImage = ''{1}'')]
+                [ITG.PowerShellModuleKit.IntegrationTest(ContainerName = ''{0}'', ContainerImage = ''{1}'')]
                 param()
                 ' -f $mockContainerName, $mockContainerImageName) | Out-File -FilePath $filePath_CorrectAttribute
 
                 ('
-                [Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 1, ContainerName = ''{0}'', ContainerImage = ''{1}'')]
+                [ITG.PowerShellModuleKit.IntegrationTest(OrderNumber = 1, ContainerName = ''{0}'', ContainerImage = ''{1}'')]
                 param()
                 ' -f $mockContainerName, $mockContainerImageName) | Out-File -FilePath $filePath_CorrectAttributeWithOrderNumber
             }
@@ -157,17 +157,17 @@ InModuleScope $script:ModuleName {
                 ' | Out-File -FilePath $filePath_NoAttribute
 
                 '
-                [Microsoft.PowerShellModuleKit.UnitTest(UnknownParameter = 2)]
+                [ITG.PowerShellModuleKit.UnitTest(UnknownParameter = 2)]
                 param()
                 ' | Out-File -FilePath $filePath_WrongAttribute
 
                 ('
-                [Microsoft.PowerShellModuleKit.UnitTest(ContainerName = ''{0}'')]
+                [ITG.PowerShellModuleKit.UnitTest(ContainerName = ''{0}'')]
                 param()
                 ' -f $mockContainerName) | Out-File -FilePath $filePath_CorrectAttributeOnlyContainerName
 
                 ('
-                [Microsoft.PowerShellModuleKit.UnitTest(ContainerName = ''{0}'', ContainerImage = ''{1}'')]
+                [ITG.PowerShellModuleKit.UnitTest(ContainerName = ''{0}'', ContainerImage = ''{1}'')]
                 param()
                 ' -f $mockContainerName, $mockContainerImageName) | Out-File -FilePath $filePath_CorrectAttribute
             }
