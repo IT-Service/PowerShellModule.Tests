@@ -2,7 +2,7 @@ $projectRootPath = Split-Path -Path $PSScriptRoot -Parent
 $testHelperPath = Join-Path -Path $projectRootPath -ChildPath 'TestHelper.psm1'
 Import-Module -Name $testHelperPath -Force
 
-$script:localizedData = Get-LocalizedData -ModuleName 'DscResource.GalleryDeploy' -ModuleRoot $PSScriptRoot
+$script:localizedData = Get-LocalizedData -ModuleName 'PowerShellModule.GalleryDeploy' -ModuleRoot $PSScriptRoot
 
 <#
     .SYNOPSIS
@@ -10,7 +10,7 @@ $script:localizedData = Get-LocalizedData -ModuleName 'DscResource.GalleryDeploy
         meet the publishing criteria.
 
     .PARAMETER ResourceModuleName
-        Name of the resource module being deployed.
+        Name of the PowerShell module being deployed.
 
     .PARAMETER Path
         The path to the examples. This path will be recursively search for
@@ -113,8 +113,8 @@ function Start-GalleryDeploy
     $exampleFile = Get-ChildItem -Path $Path -Filter '*Config.ps1' -Recurse
     foreach ($exampleToValidate in $exampleFile)
     {
-        $requiredModules = Get-ResourceModulesInConfiguration -ConfigurationPath $exampleToValidate.FullName |
-            Where-Object -Property Name -ne $ResourceModuleName
+        $requiredModules = Get-ModulesInScript -Path $exampleToValidate.FullName |
+        Where-Object -Property Name -ne $ResourceModuleName
 
         if ($requiredModules)
         {
@@ -179,8 +179,8 @@ function Start-GalleryDeploy
 
     # Test GUID's
     $duplicateGuid = $examplesToPublish |
-        Group-Object -Property 'Guid' |
-        Where-Object -FilterScript { $_.Count -gt 1 }
+    Group-Object -Property 'Guid' |
+    Where-Object -FilterScript { $_.Count -gt 1 }
 
     if ($duplicateGuid)
     {
@@ -197,7 +197,7 @@ function Start-GalleryDeploy
 
         $publishFilename = '{0}{1}' -f `
             $publishFilenameWithoutExtension,
-            (Get-Item $exampleToPublish.Path).Extension
+        (Get-Item $exampleToPublish.Path).Extension
 
         $destinationPath = Join-Path -Path $env:TEMP -ChildPath $publishFilename
 

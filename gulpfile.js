@@ -6,7 +6,7 @@ var markdownlint = require("markdownlint");
 gulp.task("test-mdsyntax", function task() {
   var paths = [];
 
-  var i = process.argv.indexOf("--dscresourcespath");
+  var i = process.argv.indexOf("--powershellmodulespath");
   if (i > -1) {
     paths.push(process.argv[i + 1] + '/**/*.md');
   }

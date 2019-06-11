@@ -2,7 +2,7 @@ $projectRootPath = Split-Path -Path $PSScriptRoot -Parent
 $testHelperPath = Join-Path -Path $projectRootPath -ChildPath 'TestHelper.psm1'
 Import-Module -Name $testHelperPath -Force
 
-$script:localizedData = Get-LocalizedData -ModuleName 'DscResource.Container' -ModuleRoot $PSScriptRoot
+$script:localizedData = Get-LocalizedData -ModuleName 'PowerShellModule.Container' -ModuleRoot $PSScriptRoot
 
 <#
     .SYNOPSIS
@@ -191,7 +191,7 @@ function New-Container
     $containerTestPath = '@("{0}")' -f ($TestPath -join '", "')
 
     # Builds the final command arguments that is used with the call to powershell.exe.
-    $containerScript = 'Import-Module -Name ''{0}\DscResource.Tests\DscResource.Container'';Start-ContainerTest -ContainerName {1} -Path {0} -TestPath {2}' -f $ProjectPath, $Name, $containerTestPath
+    $containerScript = 'Import-Module -Name ''{0}\PowerShellModule.Tests\PowerShellModule.Container'';Start-ContainerTest -ContainerName {1} -Path {0} -TestPath {2}' -f $ProjectPath, $Name, $containerTestPath
 
     if ($PSBoundParameters.ContainsKey('CodeCoverage'))
     {
@@ -554,7 +554,7 @@ function Out-TestResult
     if ($ShowOnlyFailed.IsPresent)
     {
         $testsToOutput = $TestResult |
-            Where-Object -FilterScript {
+        Where-Object -FilterScript {
             $_.Passed -eq $false
         }
     }
@@ -564,7 +564,7 @@ function Out-TestResult
     }
 
     $uniqueDescribeBlockName = $testsToOutput |
-        Select-Object -ExpandProperty 'Describe' -Unique
+    Select-Object -ExpandProperty 'Describe' -Unique
 
     foreach ($describeBlockName in $uniqueDescribeBlockName)
     {
@@ -576,7 +576,7 @@ function Out-TestResult
                 the It-block is directly in a Describe-block).
             #>
             $uniqueContextBlockName = $testsToOutput |
-                Where-Object -FilterScript {
+            Where-Object -FilterScript {
                 $_.Describe -eq $describeBlockName -and $_.Context -ne ''
             } | Select-Object -ExpandProperty 'Context' -Unique
 
@@ -584,7 +584,7 @@ function Out-TestResult
             {
                 Context -Name $contextBlockName {
                     $itBlocks = $testsToOutput |
-                        Where-Object -FilterScript {
+                    Where-Object -FilterScript {
                         $_.Describe -eq $describeBlockName `
                             -and $_.Context -eq $contextBlockName
                     }
@@ -603,7 +603,7 @@ function Out-TestResult
                 in a Describe-block).
             #>
             $itBlocks = $testsToOutput |
-                Where-Object -FilterScript {
+            Where-Object -FilterScript {
                 $_.Describe -eq $describeBlockName `
                     -and $_.Context -eq ''
             }
@@ -723,7 +723,7 @@ function Out-MissedCommand
         Write-Host -ForegroundColor Red -Object ($script:localizedData.MissedCommandsInCodeCoverage -f $MissedCommand.Count)
 
         [PSCustomObject[]] $MissedCommand = $MissedCommand |
-            Select-Object -Property @{
+        Select-Object -Property @{
             Name = 'File'; Expression = {
                 $_.File -replace ("$env:APPVEYOR_BUILD_FOLDER\" -replace '\\', '\\')
             }

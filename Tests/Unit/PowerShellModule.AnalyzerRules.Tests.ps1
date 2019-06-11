@@ -4,7 +4,7 @@ $script:ModuleRootPath = Join-Path -Path $script:ProjectRoot -ChildPath $script:
 
 Import-Module -Name (Join-Path -Path $script:ProjectRoot -ChildPath 'TestHelper.psm1') -Force
 <#
-    Script analyzer is needed to be able to load the the DscResource.AnalyzerRules
+    Script analyzer is needed to be able to load the the PowerShellModule.AnalyzerRules
     module, and be able to call Invoke-PSScriptAnalyzer.
 #>
 Import-PSScriptAnalyzer
@@ -621,84 +621,6 @@ Describe 'Measure-ParameterBlockMandatoryNamedArgument' {
                 '
 
                 Invoke-ScriptAnalyzer @invokeScriptAnalyzerParameters | Should -BeNullOrEmpty
-            }
-        }
-
-        Context 'When Mandatory Attribute NamedParameter is in a class' {
-            It 'Should not return any records' {
-                $invokeScriptAnalyzerParameters['ScriptDefinition'] = '
-                    [DscResource()]
-                    class Resource
-                    {
-                        [DscProperty(Key)]
-                        [string] $DscKeyString
-
-                        [DscProperty(Mandatory)]
-                        [int] $DscNum
-
-                        [Resource] Get()
-                        {
-                            return $this
-                        }
-
-                        [void] Set()
-                        {
-                        }
-
-                        [bool] Test()
-                        {
-                            return $true
-                        }
-                    }
-                '
-
-                $record = Invoke-ScriptAnalyzer @invokeScriptAnalyzerParameters
-                $record | Should -BeNullOrEmpty
-            }
-        }
-
-        Context 'When Mandatory Attribute NamedParameter is in script block in a property in a class' {
-            It 'Should return records for NameParameter in the ScriptBlock only' {
-                $invokeScriptAnalyzerParameters['ScriptDefinition'] = '
-                    [DscResource()]
-                    class Resource
-                    {
-                        [DscProperty(Key)]
-                        [string] $DscKeyString
-
-                        [DscProperty(Mandatory)]
-                        [int] $DscNum
-
-                        [Resource] Get()
-                        {
-                            return $this
-                        }
-
-                        [void] Set()
-                        {
-                        }
-
-                        [bool] Test()
-                        {
-                            return $true
-                        }
-
-                        [Func[Int,Int]] $MakeInt = {
-                            [Parameter(Mandatory=$true)]
-                            Param
-                            (
-                                [Parameter(Mandatory)]
-                                [int] $Input
-                            )
-                            $Input * 2
-                        }
-                    }
-                '
-
-                $record = Invoke-ScriptAnalyzer @invokeScriptAnalyzerParameters
-                ($record | Measure-Object).Count | Should -Be 1
-                $record.Message | Should -Be $localizedData.ParameterBlockParameterMandatoryAttributeWrongFormat
-                $record.RuleName | Should -Be $ruleName
             }
         }
 

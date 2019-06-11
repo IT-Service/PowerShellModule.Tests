@@ -1,1 +1,6 @@
-package-lock.json
+﻿.vs
+node_modules
+*.nuspec
+*.checksum
+TestsResults.xml
+*.zip

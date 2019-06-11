@@ -1,27 +1,25 @@
-# Module manifest for module 'DscResource.Container'
-
-@{
+﻿@{
 
     # Script module or binary module file associated with this manifest.
-    # RootModule = ''
+    RootModule        = 'PowerShellModule.AnalyzerRules.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.0.0.0'
+    ModuleVersion     = '1.0.0.0'
 
     # ID used to uniquely identify this module
-    GUID = '1f360f42-83c5-4982-8282-294738b0b514'
+    GUID              = 'cc60e612-6dea-4d56-9426-5946d53b492e'
 
     # Author of this module
-    Author = 'Microsoft Corporation'
+    Author            = 'Sergei S. Betke'
 
     # Company or vendor of this module
-    CompanyName = 'Microsoft Corporation'
+    CompanyName       = 'ФБУ "Тест-С.-Петербург"'
 
     # Copyright statement for this module
-    Copyright = '(c) 2018 Microsoft Corporation. All rights reserved.'
+    Copyright         = '(c) 2019 Sergei S. Betke. All rights reserved.'
 
     # Description of the functionality provided by this module
-    Description = 'This module is used to assist for testing using containers for PowerShell DSC resources'
+    Description       = 'This module contains script analyzer rules to ensure PowerShell modules meets minimum standards and style guidelines defined by the Microsoft PowerShell module Kit.'
 
     # Minimum version of the Windows PowerShell engine required by this module
     PowerShellVersion = '4.0'
@@ -36,7 +34,7 @@
     # DotNetFrameworkVersion = ''
 
     # Minimum version of the common language runtime (CLR) required by this module
-    # CLRVersion = ''
+    CLRVersion        = '4.0'
 
     # Processor architecture (None, X86, Amd64) required by this module
     # ProcessorArchitecture = ''
@@ -57,31 +55,19 @@
     # FormatsToProcess = @()
 
     # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-    NestedModules = @(
-            'DscResource.Container.psm1'
-        )
+    # NestedModules = @()
 
     # Functions to export from this module
-    #FunctionsToExport = '*'
+    FunctionsToExport = 'Measure*'
 
     # Cmdlets to export from this module
-    CmdletsToExport = @(
-            'Start-ContainerTest'
-            'Start-Container'
-            'New-Container'
-            'Wait-Container'
-            'Get-ContainerLog'
-            'Copy-ItemFromContainer'
-            'Copy-ItemToContainer'
-            'Out-TestResult'
-            'Out-MissedCommand'
-        )
+    CmdletsToExport   = '*'
 
     # Variables to export from this module
-    #VariablesToExport = '*'
+    VariablesToExport = '*'
 
     # Aliases to export from this module
-    #AliasesToExport = '*'
+    AliasesToExport   = '*'
 
     # List of all modules packaged with this module
     # ModuleList = @()
@@ -89,34 +75,34 @@
     # List of all files packaged with this module
     # FileList = @()
 
-    # HelpInfo URI of this module
-    # HelpInfoURI = ''
-
-    # Default prefix for commands exported from this module. Override the default prefix using Import-Module -prefix.
-    # DefaultCommandPrefix = ''
-
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
-    PrivateData = @{
+    PrivateData       = @{
 
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags = @('DesiredStateConfiguration', 'DSC', 'DSCResourceKit', 'DSCResource')
+            # Tags = @()
 
             # A URL to the license for this module.
-            LicenseUri = 'https://github.com/PowerShell/DscResource.Tests/blob/master/LICENSE'
+            # LicenseUri = ''
 
             # A URL to the main website for this project.
-            ProjectUri = 'https://github.com/PowerShell/DscResource.Tests'
+            # ProjectUri = ''
 
             # A URL to an icon representing this module.
             # IconUri = ''
 
             # ReleaseNotes of this module
-            ReleaseNotes = ''
+            # ReleaseNotes = ''
 
         } # End of PSData hashtable
 
     } # End of PrivateData hashtable
-}
 
+    # HelpInfo URI of this module
+    # HelpInfoURI = ''
+
+    # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
+    # DefaultCommandPrefix = ''
+
+}

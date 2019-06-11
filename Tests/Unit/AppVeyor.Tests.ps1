@@ -80,7 +80,7 @@ InModuleScope $script:ModuleName {
                         ErrorRecord            = $null
                         ParameterizedSuiteName = $null
                         Describe               = 'MyModule\TestFunction'
-                        Parameters             = [ordered] @{}
+                        Parameters             = [ordered] @{ }
                         Passed                 = $true
                         Show                   = 'All'
                         FailureMessage         = $null
@@ -93,13 +93,13 @@ InModuleScope $script:ModuleName {
                 )
                 FailedCount  = 0
                 CodeCoverage = New-Object -TypeName Object |
-                    Add-Member -MemberType NoteProperty -Name 'NumberOfCommandsAnalyzed' -Value 3 -PassThru |
-                    Add-Member -MemberType NoteProperty -Name 'NumberOfFilesAnalyzed' -Value 2 -PassThru |
-                    Add-Member -MemberType NoteProperty -Name 'NumberOfCommandsExecuted' -Value 1 -PassThru |
-                    Add-Member -MemberType NoteProperty -Name 'NumberOfCommandsMissed' -Value 2 -PassThru |
-                    Add-Member -MemberType NoteProperty -Name 'MissedCommands' -Value $mockMissedCommands -PassThru |
-                    Add-Member -MemberType NoteProperty -Name 'HitCommands' -Value $mockHitCommands -PassThru |
-                    Add-Member -MemberType NoteProperty -Name 'AnalyzedFiles' -Value $mockAnalyzedFiles -PassThru -Force
+                Add-Member -MemberType NoteProperty -Name 'NumberOfCommandsAnalyzed' -Value 3 -PassThru |
+                Add-Member -MemberType NoteProperty -Name 'NumberOfFilesAnalyzed' -Value 2 -PassThru |
+                Add-Member -MemberType NoteProperty -Name 'NumberOfCommandsExecuted' -Value 1 -PassThru |
+                Add-Member -MemberType NoteProperty -Name 'NumberOfCommandsMissed' -Value 2 -PassThru |
+                Add-Member -MemberType NoteProperty -Name 'MissedCommands' -Value $mockMissedCommands -PassThru |
+                Add-Member -MemberType NoteProperty -Name 'HitCommands' -Value $mockHitCommands -PassThru |
+                Add-Member -MemberType NoteProperty -Name 'AnalyzedFiles' -Value $mockAnalyzedFiles -PassThru -Force
             }
         }
 
@@ -221,7 +221,7 @@ InModuleScope $script:ModuleName {
                 }
 
                 # Making sure there is no output when performing tests
-                Mock -CommandName Test-IsRepositoryDscResourceTests -MockWith {
+                Mock -CommandName Test-IsRepositoryPowerShellModuleTests -MockWith {
                     return $false
                 }
             } # End BeforeAll
@@ -232,7 +232,7 @@ InModuleScope $script:ModuleName {
                 }
 
                 Assert-MockCalled -CommandName Test-Path -Times 1 -Exactly -Scope It -ParameterFilter {
-                    $Path -eq "$env:APPVEYOR_BUILD_FOLDER\DSCResources"
+                    $Path -eq "$env:APPVEYOR_BUILD_FOLDER\PowerShellModules"
                 }
 
                 Assert-MockCalled -CommandName Test-Path -Times 1 -Exactly -Scope It -ParameterFilter {
@@ -256,7 +256,7 @@ InModuleScope $script:ModuleName {
                 Mock -CommandName Test-Path -MockWith {
                     return $false
                 } -ParameterFilter {
-                    $Path -and $Path -eq "$env:APPVEYOR_BUILD_FOLDER\DSCResources"
+                    $Path -and $Path -eq "$env:APPVEYOR_BUILD_FOLDER\PowerShellModules"
                 }
 
                 {
@@ -268,11 +268,11 @@ InModuleScope $script:ModuleName {
                 }
 
                 Assert-MockCalled -CommandName Invoke-Pester -Times 0 -Exactly -Scope It -ParameterFilter {
-                    $CodeCoverage -contains "$env:APPVEYOR_BUILD_FOLDER\DSCResources\**\*.psm1"
+                    $CodeCoverage -contains "$env:APPVEYOR_BUILD_FOLDER\PowerShellModules\**\*.psm1"
                 }
             } # End It DSCClassResources only
 
-            It 'Should only include DSCResources for CodeCoverage' {
+            It 'Should only include PowerShellModules for CodeCoverage' {
                 Mock -CommandName Test-Path -MockWith {
                     return $false
                 } -ParameterFilter {
@@ -282,7 +282,7 @@ InModuleScope $script:ModuleName {
                 Mock -CommandName Test-Path -MockWith {
                     return $true
                 } -ParameterFilter {
-                    $Path -and $Path -eq "$env:APPVEYOR_BUILD_FOLDER\DSCResources"
+                    $Path -and $Path -eq "$env:APPVEYOR_BUILD_FOLDER\PowerShellModules"
                 }
 
                 {
@@ -294,11 +294,11 @@ InModuleScope $script:ModuleName {
                 }
 
                 Assert-MockCalled -CommandName Invoke-Pester -Times 1 -Exactly -Scope It -ParameterFilter {
-                    $CodeCoverage -contains "$env:APPVEYOR_BUILD_FOLDER\DSCResources\**\*.psm1"
+                    $CodeCoverage -contains "$env:APPVEYOR_BUILD_FOLDER\PowerShellModules\**\*.psm1"
                 }
-            } # End It DSCResources only
+            } # End It PowerShellModules only
 
-            It 'Should include DSCResources and DSCClassResources for CodeCoverage' {
+            It 'Should include PowerShellModules and DSCClassResources for CodeCoverage' {
                 Mock -CommandName Test-Path -MockWith {
                     return $true
                 } -ParameterFilter {
@@ -308,7 +308,7 @@ InModuleScope $script:ModuleName {
                 Mock -CommandName Test-Path -MockWith {
                     return $true
                 } -ParameterFilter {
-                    $Path -and $Path -eq "$env:APPVEYOR_BUILD_FOLDER\DSCResources"
+                    $Path -and $Path -eq "$env:APPVEYOR_BUILD_FOLDER\PowerShellModules"
                 }
 
                 {
@@ -320,9 +320,9 @@ InModuleScope $script:ModuleName {
                 }
 
                 Assert-MockCalled -CommandName Invoke-Pester -Times 1 -Exactly -Scope It -ParameterFilter {
-                    $CodeCoverage -contains "$env:APPVEYOR_BUILD_FOLDER\DSCResources\**\*.psm1"
+                    $CodeCoverage -contains "$env:APPVEYOR_BUILD_FOLDER\PowerShellModules\**\*.psm1"
                 }
-            } # End It Both DSCResources and DSCClassResources
+            } # End It Both PowerShellModules and DSCClassResources
 
             It 'Should include all default paths for CodeCoverage' {
                 Mock -CommandName Test-Path -MockWith {
@@ -335,10 +335,10 @@ InModuleScope $script:ModuleName {
 
                 Assert-MockCalled -CommandName Invoke-Pester -Times 1 -Exactly -Scope It -ParameterFilter {
                     $CodeCoverage -contains "$env:APPVEYOR_BUILD_FOLDER\DSCClassResources\**\*.psm1" `
-                    -and $CodeCoverage -contains "$env:APPVEYOR_BUILD_FOLDER\DSCResources\**\*.psm1" `
-                    -and $CodeCoverage -contains "$env:APPVEYOR_BUILD_FOLDER\Modules\**\*.psm1"
+                        -and $CodeCoverage -contains "$env:APPVEYOR_BUILD_FOLDER\PowerShellModules\**\*.psm1" `
+                        -and $CodeCoverage -contains "$env:APPVEYOR_BUILD_FOLDER\Modules\**\*.psm1"
                 }
-            } # End It Both DSCResources and DSCClassResources
+            } # End It Both PowerShellModules and DSCClassResources
         } # End Context When CodeCoverage requires additional directories
 
         Context 'When Invoke-AppveyorTestScriptTask is called with parameter CodeCoverage and CodeCoveragePath ' {
@@ -367,7 +367,7 @@ InModuleScope $script:ModuleName {
                 }
 
                 # Making sure there is no output when performing tests
-                Mock -CommandName Test-IsRepositoryDscResourceTests -MockWith {
+                Mock -CommandName Test-IsRepositoryPowerShellModuleTests -MockWith {
                     return $false
                 }
             } # End BeforeAll
@@ -378,7 +378,7 @@ InModuleScope $script:ModuleName {
                 }
 
                 Assert-MockCalled -CommandName Test-Path -Times 0 -Exactly -Scope It -ParameterFilter {
-                    $Path -eq "$env:APPVEYOR_BUILD_FOLDER\DSCResources"
+                    $Path -eq "$env:APPVEYOR_BUILD_FOLDER\PowerShellModules"
                 }
 
                 Assert-MockCalled -CommandName Test-Path -Times 0 -Exactly -Scope It -ParameterFilter {
@@ -440,7 +440,7 @@ InModuleScope $script:ModuleName {
                     BeforeAll {
                         New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Integration\MockResource1.config.ps1') -ItemType File -Force
 
-                        Mock -CommandName Get-ResourceModulesInConfiguration -MockWith {
+                        Mock -CommandName Get-ModulesInScript -MockWith {
                             return @{
                                 Name = 'MyModule'
                             }
@@ -454,7 +454,7 @@ InModuleScope $script:ModuleName {
                             Invoke-AppveyorTestScriptTask
                         } | Should -Not -Throw
 
-                        Assert-MockCalled -CommandName Get-ResourceModulesInConfiguration -Exactly -Times 1 -Scope It
+                        Assert-MockCalled -CommandName Get-ModulesInScript -Exactly -Times 1 -Scope It
                         Assert-MockCalled -CommandName Install-DependentModule -Exactly -Times 1 -Scope It
                     }
                 }
@@ -507,12 +507,12 @@ InModuleScope $script:ModuleName {
             Context 'When called with parameters RunTestInOrder' {
                 BeforeAll {
                     '
-                    [Microsoft.DscResourceKit.IntegrationTest(OrderNumber = 1)]
+                    [Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 1)]
                     param()
                     ' | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Integration\MockResource1.Integration.Tests.ps1') -Encoding UTF8 -Force
 
                     '
-                    [Microsoft.DscResourceKit.IntegrationTest(OrderNumber = 2)]
+                    [Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 2)]
                     param()
                     ' | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Integration\MockResource2.Integration.Tests.ps1') -Encoding UTF8 -Force
                 }
@@ -538,11 +538,11 @@ InModuleScope $script:ModuleName {
 
             Context 'When called with parameters RunTestInOrder and CodeCoverage, and using containers' {
                 BeforeAll {
-                    # Mock the Meta.Tests.ps1 from DscResource.Tests.
-                    New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'DSCResource.Tests\Meta.Tests.ps1') -ItemType File -Force
+                    # Mock the Meta.Tests.ps1 from PowerShellModule.Tests.
+                    New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'PowerShellModule.Tests\Meta.Tests.ps1') -ItemType File -Force
 
                     <#
-                        Mock some empty resource module files. These files are
+                        Mock some empty PowerShell module files. These files are
                         used by the tested code, to mock coverage.
                     #>
                     New-Item -Path (Join-Path -Path $TestDrive -ChildPath 'MockResource1.psm1') -ItemType File -Force
@@ -559,22 +559,22 @@ InModuleScope $script:ModuleName {
                     $containerIdentifier2 = 2222
 
                     ('
-                    [Microsoft.DscResourceKit.UnitTest(ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
+                    [Microsoft.PowerShellModuleKit.UnitTest(ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
                     param()
                     ' -f $containerName1) | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Unit\MockResource1.Tests.ps1') -Encoding UTF8 -Force
 
                     ('
-                    [Microsoft.DscResourceKit.UnitTest(ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
+                    [Microsoft.PowerShellModuleKit.UnitTest(ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
                     param()
-                    ' -f $containerName2)| Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Unit\MockResource2.Tests.ps1') -Encoding UTF8 -Force
+                    ' -f $containerName2) | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Unit\MockResource2.Tests.ps1') -Encoding UTF8 -Force
 
                     ('
-                    [Microsoft.DscResourceKit.IntegrationTest(OrderNumber = 1, ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
+                    [Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 1, ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
                     param()
                     ' -f $containerName1) | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Integration\MockResource1.Integration.Tests.ps1') -Encoding UTF8 -Force
 
                     ('
-                    [Microsoft.DscResourceKit.IntegrationTest(OrderNumber = 2, ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
+                    [Microsoft.PowerShellModuleKit.IntegrationTest(OrderNumber = 2, ContainerName = ''{0}'', ContainerImage = ''microsoft/windowsservercore'')]
                     param()
                     ' -f $containerName2) | Set-Content -Path (Join-Path -Path $TestDrive -ChildPath 'Tests\Integration\MockResource2.Integration.Tests.ps1') -Encoding UTF8 -Force
 
@@ -670,7 +670,7 @@ InModuleScope $script:ModuleName {
                         Mock -CommandName Get-ContainerLog -MockWith {
                             $invalidOperationException = New-Object -TypeName 'InvalidOperationException' -ArgumentList @( $errorMessage )
                             $newObjectParameters = @{
-                                TypeName = 'System.Management.Automation.ErrorRecord'
+                                TypeName     = 'System.Management.Automation.ErrorRecord'
                                 ArgumentList = @(
                                     $invalidOperationException.ToString(),
                                     'MachineStateIncorrect',
@@ -730,7 +730,7 @@ InModuleScope $script:ModuleName {
             Mock -CommandName Write-Info
             Mock -CommandName Start-GalleryDeploy
             Mock -CommandName Import-Module -ParameterFilter {
-                $Name -match 'DscResource\.GalleryDeploy'
+                $Name -match 'PowerShellModule\.GalleryDeploy'
             }
 
             $mockBranchName = 'MockTestBranch'
@@ -763,7 +763,7 @@ InModuleScope $script:ModuleName {
                 } | Should -Not -Throw
 
                 Assert-MockCalled -CommandName Import-Module -ParameterFilter {
-                    $Name -match 'DscResource\.GalleryDeploy'
+                    $Name -match 'PowerShellModule\.GalleryDeploy'
                 } -Exactly -Times 0 -Scope It
 
                 Assert-MockCalled -CommandName Start-GalleryDeploy -Exactly -Times 0 -Scope It
@@ -777,7 +777,7 @@ InModuleScope $script:ModuleName {
                 } | Should -Not -Throw
 
                 Assert-MockCalled -CommandName Import-Module -ParameterFilter {
-                    $Name -match 'DscResource\.GalleryDeploy'
+                    $Name -match 'PowerShellModule\.GalleryDeploy'
                 } -Exactly -Times 0 -Scope It
 
                 Assert-MockCalled -CommandName Start-GalleryDeploy -Exactly -Times 0 -Scope It
@@ -791,7 +791,7 @@ InModuleScope $script:ModuleName {
                 } | Should -Not -Throw
 
                 Assert-MockCalled -CommandName Import-Module -ParameterFilter {
-                    $Name -match 'DscResource\.GalleryDeploy'
+                    $Name -match 'PowerShellModule\.GalleryDeploy'
                 } -Exactly -Times 1 -Scope It
 
                 Assert-MockCalled -CommandName Start-GalleryDeploy -Exactly -Times 1 -Scope It
@@ -824,7 +824,7 @@ InModuleScope $script:ModuleName {
 
                 Assert-MockCalled -CommandName Install-Module -ParameterFilter {
                     $Name -eq 'Pester' `
-                    -and $PSBoundParameters.ContainsKey('MaximumVersion') -eq $false
+                        -and $PSBoundParameters.ContainsKey('MaximumVersion') -eq $false
                 } -Exactly -Times 1 -Scope It
             }
         }
@@ -849,7 +849,7 @@ InModuleScope $script:ModuleName {
 
                 Assert-MockCalled -CommandName Install-Module -ParameterFilter {
                     $Name -eq 'Pester' `
-                    -and $MaximumVersion -eq [Version] $mockPesterMaximumVersion
+                        -and $MaximumVersion -eq [Version] $mockPesterMaximumVersion
                 } -Exactly -Times 1 -Scope It
             }
         }

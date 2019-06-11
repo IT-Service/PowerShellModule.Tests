@@ -1,7 +1,7 @@
 #---------------------------------#
 #      environment configuration  #
 #---------------------------------#
-version: 0.2.{build}.0
+version: 0.1.0.{build}
 install:
     - ps: |
         Import-Module "$env:APPVEYOR_BUILD_FOLDER\AppVeyor.psm1"

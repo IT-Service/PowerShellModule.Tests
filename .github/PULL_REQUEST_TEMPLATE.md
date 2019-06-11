@@ -37,4 +37,4 @@
 - [ ] Comment-based help added/updated for all new/changed functions.
 - [ ] Localization strings added/updated in all localization files as appropriate.
 - [ ] Unit tests added/updated.
-- [ ] New/changed code adheres to [DSC Resource Style Guidelines](https://github.com/PowerShell/DscResources/blob/master/StyleGuidelines.md) and [Best Practices](https://github.com/PowerShell/DscResources/blob/master/BestPractices.md).
+- [ ] New/changed code adheres to [PowerShell module Style Guidelines](https://github.com/PowerShell/PowerShellModules/blob/master/StyleGuidelines.md) and [Best Practices](https://github.com/PowerShell/PowerShellModules/blob/master/BestPractices.md).

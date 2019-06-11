@@ -7,10 +7,10 @@ Describe "$($script:ModuleName) Unit Tests" {
     }
 
     InModuleScope $script:ModuleName {
-        Describe 'Start-DscResourceTests' {
+        Describe 'Start-PowerShellModuleTests' {
             BeforeAll {
                 # Set up TestDrive
-                $mockResourcePath = Join-Path -Path 'TestDrive:' -ChildPath 'DscResources'
+                $mockResourcePath = Join-Path -Path 'TestDrive:' -ChildPath 'PowerShellModules'
                 New-Item -Path $mockResourcePath -ItemType Directory
 
                 $mockResource1Path = Join-Path -Path $mockResourcePath -ChildPath 'Resource1'
@@ -32,7 +32,7 @@ Describe "$($script:ModuleName) Unit Tests" {
 
             Context 'When starting tests' {
                 It 'Should call Invoke-Pester exactly 2 times' {
-                    { Start-DscResourceTests -ResourcesPath $mockResourcePath } | Should -Not -Throw
+                    { Start-PowerShellModuleTests -ResourcesPath $mockResourcePath } | Should -Not -Throw
 
                     Assert-MockCalled -CommandName Invoke-Pester -Exactly -Times 2
                 }
